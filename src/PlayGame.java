@@ -14,6 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 
 import javafx.stage.Stage;
+
+import javax.swing.text.Position;
 import java.util.HashMap;
 public class PlayGame extends Application{
     CardDeck deck;
@@ -21,8 +23,8 @@ public class PlayGame extends Application{
     /*TODO: Implement computer hand, player hand, most recent discard and full discard pile*/
     StackPane root = new StackPane();
     Text instructions = new Text( "CLICK THE CARDS AFTER DEALING." );
-    Group computerCastleFaceUp, computerCastleFaceDown,
-            lastDiscard, discard, dealPile = new Group();
+    Group lastDiscard, discard = new Group(); //TODO: Implement These
+    Group dealPile = new Group();
     Group computerHand = new Group();
     Group playerHand = new Group();
     Group groupOfLoneCards  = new Group();
@@ -43,10 +45,10 @@ public class PlayGame extends Application{
         }
     };
 
-
     //scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, DRAG);
     EventHandler<MouseEvent> DRAG = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent DRAG){
+            //TODO: Solve the disappearing card issue
             PLAYER.setBounds(DRAG.getSceneX(), DRAG.getSceneY());
         }
     };
@@ -58,6 +60,7 @@ public class PlayGame extends Application{
                 "C:\\Users\\Queen\\IdeaProjects\\Castle\\cardBackArrows.png"),
                 100, 150, false, false);
         //Reads in the image files for the front face of the card deck and creates 52 faceUp image objects (TODO: Minus Joker Values))
+        //TODO: Solve the blank face card issue
         Images.faceUp= new HashMap<String, Image>() ;
         String[] wordsInFilePNGNames= { "hearts", "diamonds", "spades", "clubs"} ;
         for (int suitIndex = 0; suitIndex < 4; suitIndex++){
@@ -69,38 +72,36 @@ public class PlayGame extends Application{
                 Images.faceUp.put(cardNames, faceUpCards) ;
             }
         }
-        deck  =  new CardDeck() ;
+        //Initializes the deck and the Deal Pile
+        deck  =  new CardDeck();
         deck.shuffle();
+        for(int index = 0; index < deck.size(); index++){
+            dealPile.setLayoutX(1100);
+            dealPile.setLayoutY(285);
+            dealPile.getChildren().add(deck.getCard(index));
+        }
     }
 
     public void start (Stage stage) throws FileNotFoundException {
         stage.setTitle( "The Game Of Castle" );
-
         initDeck(); //Initializes Deck
-
         Button  dealButton   = new Button( "DEAL" );
         Button  clearButton   = new Button( "CLEAR TABLE" );
-
-
-        //Assigns dealing action to the button
-        dealButton.setOnAction((ActionEvent event) -> {
+        dealButton.setOnAction((ActionEvent event) -> {//Assigns dealing action to the button
             if (instructions != null){
                 root.getChildren().remove(instructions);
                 instructions = null;
             }
-            //Empties the list 'inside' the Group
-            playerHand.getChildren().clear();
-
             //Allocates 10 Cards to Each player
             for(int cardIndex  =  0; cardIndex  < 10; cardIndex ++){
-                Card newCard = deck.getCard();
+                Card newCard = deck.dealCard();
                 double CPHandPosX = 40 + (Card.WIDTH + 20) * cardIndex;
                 double CPHandPosY = 50;
                 newCard.setCardPos(CPHandPosX, CPHandPosY);
                 COMPUTER.HAND.add(newCard);
                 computerHand.getChildren().add(COMPUTER.HAND.get(cardIndex));
 
-                newCard = deck.getCard();
+                newCard = deck.dealCard();
                 double HPHandPosX = 40 + (Card.WIDTH + 20) * cardIndex;
                 double HPHandPosY = 400;
                 newCard.setCardPos(HPHandPosX, HPHandPosY);
@@ -108,6 +109,7 @@ public class PlayGame extends Application{
                 playerHand.getChildren().add(PLAYER.HAND.get(cardIndex));
             }
         });
+        System.out.println(deck.size());
 
         //Assigns clear action to the button
         clearButton.setOnAction((ActionEvent event) -> {
@@ -125,11 +127,11 @@ public class PlayGame extends Application{
 
         Group mainCardGroup = new Group();
         mainCardGroup.setManaged(false);
-        mainCardGroup.getChildren().addAll(playerHand, computerHand);
+        mainCardGroup.getChildren().addAll(playerHand, computerHand, dealPile);
 
         instructions.setFont(new Font(24));
         root.getChildren().addAll(borderPane, mainCardGroup, instructions);
-        Scene scene = new Scene(root, 910, 600 );
+        Scene scene = new Scene(root, 1280, 720);
 
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, CLICK);
         scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, DRAG);

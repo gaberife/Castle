@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardDeck {
@@ -24,7 +23,11 @@ public class CardDeck {
         }
     }
 
-    public Card getCard() {
+    public Card getCard(int n) {
+        return cardDeck.get(n);
+    }
+
+    public Card dealCard() {
         Card cardToReturn = null;
         if (cardDeck.size() > 0) {
             cardToReturn = cardDeck.remove(cardDeck.size() - 1);
