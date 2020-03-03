@@ -1,32 +1,38 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardDeck {
-    static int[] suits = { Card.HEARTS, Card.DIAMONDS, Card.SPADES, Card.CLUBS}; //ToDo: include Card.JOKER
-    ArrayList<Card>  cardDeck  =  new ArrayList<Card>();
+    static int[] suits = {Card.HEARTS, Card.DIAMONDS, Card.SPADES, Card.CLUBS}; //ToDo: include Card.JOKER
+    ArrayList<Card> cardDeck = new ArrayList<Card>();
 
-    public CardDeck(){
-        for (int suitIndex = 0; suitIndex < 4; suitIndex++){
+    public CardDeck() {
+        for (int suitIndex = 0; suitIndex < 4; suitIndex++) {
             for (int cardRank = 1; cardRank < 14; cardRank++)
                 addCard(new Card(cardRank, suits[suitIndex]));
         }
     }
 
-    public void shuffle(){
+    public void shuffle() {
         Collections.shuffle(cardDeck);
     }
 
-    public void addCard(Card card){
-        if (cardDeck.size()  <  52 ){ //TODO: IMPLEMENT JOKER PLAYABILITY
+    public void addCard(Card card) {
+        if (cardDeck.size() < 52) { //TODO: IMPLEMENT JOKER PLAYABILITY
             cardDeck.add(card);
         }
     }
 
-    public Card getCard(){
-        Card cardToReturn  =  null;
-        if (cardDeck.size()  >  0){
-            cardToReturn  = cardDeck.remove(cardDeck.size() - 1);
+    public Card getCard() {
+        Card cardToReturn = null;
+        if (cardDeck.size() > 0) {
+            cardToReturn = cardDeck.remove(cardDeck.size() - 1);
         }
-        return  cardToReturn;
+        return cardToReturn;
+    }
+
+    public int size() {
+        return cardDeck.size();
     }
 }
