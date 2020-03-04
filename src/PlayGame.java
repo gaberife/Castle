@@ -33,7 +33,6 @@ public class PlayGame extends Application{
 
 
     //TODO: make it so that more than just selected card can be interacted with
-    //scene.addEventFilter(MouseEvent.MOUSE_CLICKED, CLICK);
     EventHandler<MouseEvent> CLICK = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent CLICK) {
             double x = CLICK.getSceneX();
@@ -43,18 +42,17 @@ public class PlayGame extends Application{
             else
                 System.out.println("This is not working");
         }
-    };
+    }; //Initializes CLICK Mouse Event
 
-    //scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, DRAG);
     EventHandler<MouseEvent> DRAG = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent DRAG){
-            //TODO: Solve the disappearing card issue
+            //TODO: Solve the disappearing card issue, something about the Z index
+            //PLAYER.toFront();
             PLAYER.setBounds(DRAG.getSceneX(), DRAG.getSceneY());
         }
-    };
+    }; //Initializes DRAG Mouse Event
 
-    //Initializes Deck the Deck
-    public void initDeck() throws FileNotFoundException {
+    public void initDeck() throws FileNotFoundException { //Initializes the Deck
         //Reads in the image file for the back of the card and creates a faceDown Images object
         Images.faceDown = new Image(new FileInputStream(
                 "C:\\Users\\Queen\\IdeaProjects\\Castle\\cardBackArrows.png"),

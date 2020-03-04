@@ -29,14 +29,10 @@ public class Player extends ImageView {
     }
 
     public void setBounds(double x, double y){
-        double cardPosX;
-        double cardPosY;
-
         //TODO: Find out why moving the cards makes other cards disappear
         for (int i = 0; i < HAND.size(); i++) {
             if (x > HAND.get(i).getCardPosX() && x < HAND.get(i).getCardPosX() + 100 && y > HAND.get(i).getCardPosY() && y < HAND.get(i).getCardPosY() + 150)
                 HAND.get(i).setCardPos(x - 50,y - 75);
         }
     }
-
 }
