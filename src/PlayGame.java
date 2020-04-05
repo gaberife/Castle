@@ -1,6 +1,5 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.layout.*;
@@ -8,15 +7,12 @@ import javafx.scene.text.* ;
 import javafx.scene.input.* ;
 import javafx.geometry.* ;
 import java.io.*;
-
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.image.Image;
 import javafx.scene.control.Button;
-
 import javafx.stage.Stage;
-
-import javax.swing.text.Position;
 import java.util.HashMap;
+
 public class PlayGame extends Application{
     CardDeck deck;
 
@@ -39,16 +35,21 @@ public class PlayGame extends Application{
             double y = CLICK.getSceneY();
             if(PLAYER.HAND != null && PLAYER.checkBounds(CLICK.getSceneX(), CLICK.getSceneY()))
                 PLAYER.getCard(x,y).flipCard();
-            else
-                System.out.println("This is not working");
+            System.out.println(PLAYER.getScaleZ());
+
+            //else
+                //System.out.println("This is not working");
         }
     }; //Initializes CLICK Mouse Event
 
     EventHandler<MouseEvent> DRAG = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent DRAG){
             //TODO: Solve the disappearing card issue, something about the Z index
-            //PLAYER.toFront();
             PLAYER.setBounds(DRAG.getSceneX(), DRAG.getSceneY());
+            PLAYER.toFront();
+            PLAYER.setScaleZ(PLAYER.getScaleZ() + 1);
+            System.out.println(playerHand.getScaleZ());
+
         }
     }; //Initializes DRAG Mouse Event
 
@@ -85,7 +86,8 @@ public class PlayGame extends Application{
         initDeck(); //Initializes Deck
         Button  dealButton   = new Button( "DEAL" );
         Button  clearButton   = new Button( "CLEAR TABLE" );
-        dealButton.setOnAction((ActionEvent event) -> {//Assigns dealing action to the button
+        System.out.println("There are " + deck.size() + " cards in the deck.");
+        dealButton.setOnAction((ActionEvent event) -> { //Assigns dealing action to the button
             if (instructions != null){
                 root.getChildren().remove(instructions);
                 instructions = null;
@@ -106,8 +108,8 @@ public class PlayGame extends Application{
                 PLAYER.HAND.add(newCard);
                 playerHand.getChildren().add(PLAYER.HAND.get(cardIndex));
             }
+            System.out.println("After dealing 10 cards to each player, there are " + deck.size() + " cards remaining in the deck.");
         });
-        System.out.println(deck.size());
 
         //Assigns clear action to the button
         clearButton.setOnAction((ActionEvent event) -> {
@@ -144,7 +146,7 @@ public class PlayGame extends Application{
         stage.show();
     }
 
-    public static void main( String args[] ){
+    public static void main(String args[] ){
         launch(args);
     }
 }

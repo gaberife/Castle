@@ -13,7 +13,6 @@ public class Card extends ImageView{
     public static final int  DIAMONDS =  2;
     public static final int  SPADES =  3;
     public static final int  CLUBS =  4;
-    //TODO: public static final int  JOKER =  5;
 
     public static final int  WIDTH   =  5;
     public static final int  HEIGHT  =  10;
@@ -29,9 +28,6 @@ public class Card extends ImageView{
             CardFaceUp = Images.faceUp.get( "spades" + rank);
         else if (suit == CLUBS)
             CardFaceUp = Images.faceUp.get( "clubs" + rank);
-        /*TODO: else if (suit == JOKER)
-            CardFaceUp = Images.faceUp.get( "joker" + rank);
-         */
         setImage(Images.faceDown);
     }
     //Returns rank
@@ -71,7 +67,7 @@ public class Card extends ImageView{
     }
 
     //Sets the cards position on the board
-    public void setCardPos(double x, double y ){
+    public void setCardPos(double x, double y){
         setX(x);
         setY(y);
     }
@@ -85,6 +81,13 @@ public class Card extends ImageView{
     public double getCardPosY(){
         return getY();
     }
+
+    /*
+    public double getCardPosZ() {
+        return getZ();
+    }
+     */
+
 
     public boolean getBounds(Card card, double x, double y){
         if(x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
@@ -114,9 +117,6 @@ public class Card extends ImageView{
             case  CLUBS:
                 string  =  "Clubs";
                 break;
-            /*TODO: case  JOKER:
-                string = "Joker";
-             */
             default:
                 string  =  "Program error!!!";
         }

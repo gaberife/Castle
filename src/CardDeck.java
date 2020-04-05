@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardDeck {
-    static int[] suits = {Card.HEARTS, Card.DIAMONDS, Card.SPADES, Card.CLUBS}; //ToDo: include Card.JOKER
+    static int[] suits = {Card.HEARTS, Card.DIAMONDS, Card.SPADES, Card.CLUBS};
     ArrayList<Card> cardDeck = new ArrayList<Card>();
 
     public CardDeck() {
@@ -18,7 +18,7 @@ public class CardDeck {
     }
 
     public void addCard(Card card) {
-        if (cardDeck.size() < 52) { //TODO: IMPLEMENT JOKER PLAYABILITY
+        if (cardDeck.size() < 52) {
             cardDeck.add(card);
         }
     }
