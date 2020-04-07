@@ -8,7 +8,7 @@ public class CardDeck {
 
     public CardDeck() {
         for (int suitIndex = 0; suitIndex < 4; suitIndex++) {
-            for (int cardRank = 1; cardRank < 14; cardRank++)
+            for (int cardRank = 2; cardRank < 14; cardRank++)
                 addCard(new Card(cardRank, suits[suitIndex]));
         }
     }

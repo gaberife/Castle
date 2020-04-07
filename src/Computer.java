@@ -1,13 +1,10 @@
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+import java.util.Random;
 import java.util.ArrayList;
-import java.util.Collections;
+
 public class Computer extends ImageView {
-    Image cardFaceUp;
     ArrayList<Card>  HAND  =  new ArrayList<Card>();
+    Card selectedCard;
     ArrayList<Card>  UNSEEN_CASTLE  =  new ArrayList<Card>();
     ArrayList<Card>  SEEN_CASTLE  =  new ArrayList<Card>();
 
@@ -19,12 +16,11 @@ public class Computer extends ImageView {
         return false;
     }
 
-    public Card getCard(double x, double y) {
-        Card card = null;
-        for (int i = 0; i < HAND.size(); i++)
-            if (x > HAND.get(i).getCardPosX() && x < HAND.get(i).getCardPosX() + 100 && y > HAND.get(i).getCardPosY() && y < HAND.get(i).getCardPosY() + 150)
-                card = HAND.get(i);
-        return card;
+    public Card getRandomCard() {
+        Random rand = new Random();
+        int n = rand.nextInt(HAND.size());
+        Card randomCard = HAND.get(n);
+        return randomCard;
     }
 
     public void setBounds(double x, double y){

@@ -30,6 +30,78 @@ public class Card extends ImageView{
             CardFaceUp = Images.faceUp.get( "clubs" + rank);
         setImage(Images.faceDown);
     }
+
+    public void returnRank() {
+        String ranking = null;
+        switch (rank) {
+            case 2:
+                ranking = "2 of";
+                break;
+            case 3:
+                ranking = "3 of";
+                break;
+            case 4:
+                ranking = "4 of";
+                break;
+            case 5:
+                ranking = "5 of";
+                break;
+            case 6:
+                ranking = "6 of";
+                break;
+            case 7:
+                ranking = "7 of";
+                break;
+            case 8:
+                ranking = "8 of";
+                break;
+            case 9:
+                ranking = "9 of";
+                break;
+            case 10:
+                ranking = "10 of";
+                break;
+            case 11:
+                ranking = "Jack of";
+                break;
+            case 12:
+                ranking = "Queen of";
+                break;
+            case 13:
+                ranking = "King of";
+                break;
+            case 14:
+                ranking = "Ace of";
+                break;
+            default:
+                System.out.print(rank);
+                break;
+        }
+        System.out.print(ranking);
+    }
+
+    public void returnSuit(){
+        String ranking = null;
+        switch(suit){
+            case 1:
+                ranking = " Hearts ";
+                break;
+            case 2:
+                ranking = " Diamonds ";
+                break;
+            case 3:
+                ranking = " Spades ";
+                break;
+            case 4:
+                ranking = " Clubs ";
+                break;
+            default:
+                ranking = " This isn't working.";
+                break;
+        }
+        System.out.println(ranking);
+    }
+
     //Returns rank
     public int getRank(){
         return rank;
@@ -40,22 +112,13 @@ public class Card extends ImageView{
         return suit;
     }
 
+    public void returnCardValue(Card card){
+
+    }
+
     //Flips cards
     public void flipCard(){
         if(getImage() == CardFaceUp)
-            setImage(Images.faceDown);
-        else
-            setImage(CardFaceUp);
-    }
-
-    //Sets card face up
-    public void turnCardFaceUp(){
-        setImage(CardFaceUp);
-    }
-
-    //Sets card face down
-    public void turnCardFaceDown(){
-        if (getImage() == CardFaceUp)
             setImage(Images.faceDown);
         else
             setImage(CardFaceUp);
@@ -81,12 +144,6 @@ public class Card extends ImageView{
     public double getCardPosY(){
         return getY();
     }
-
-    /*
-    public double getCardPosZ() {
-        return getZ();
-    }
-     */
 
 
     public boolean getBounds(Card card, double x, double y){
