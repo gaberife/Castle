@@ -3,35 +3,35 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
-public class Card extends ImageView{
+public class Card extends ImageView {
     int rank;
     int suit;
 
     Image CardFaceUp;
 
-    public static final int  HEARTS =  1;
-    public static final int  DIAMONDS =  2;
-    public static final int  SPADES =  3;
-    public static final int  CLUBS =  4;
+    public static final int HEARTS = 1;
+    public static final int DIAMONDS = 2;
+    public static final int SPADES = 3;
+    public static final int CLUBS = 4;
 
-    public static final int  WIDTH   =  5;
-    public static final int  HEIGHT  =  10;
+    public static final int WIDTH = 5;
+    public static final int HEIGHT = 10;
 
-    public Card (int givenRank,int givenSuit){
+    public Card(int givenRank, int givenSuit) {
         rank = givenRank;
         suit = givenSuit;
         if (suit == HEARTS)
-            CardFaceUp = Images.faceUp.get( "hearts" + rank);
+            CardFaceUp = Images.faceUp.get("hearts" + rank);
         else if (suit == DIAMONDS)
-            CardFaceUp = Images.faceUp.get( "diamonds" + rank);
+            CardFaceUp = Images.faceUp.get("diamonds" + rank);
         else if (suit == SPADES)
-            CardFaceUp = Images.faceUp.get( "spades" + rank);
+            CardFaceUp = Images.faceUp.get("spades" + rank);
         else if (suit == CLUBS)
-            CardFaceUp = Images.faceUp.get( "clubs" + rank);
+            CardFaceUp = Images.faceUp.get("clubs" + rank);
         setImage(Images.faceDown);
     }
 
-    public void returnRank() {
+    public String returnRank() {
         String ranking = null;
         switch (rank) {
             case 2:
@@ -77,10 +77,11 @@ public class Card extends ImageView{
                 System.out.print(rank);
                 break;
         }
-        System.out.print(ranking);
+        return ranking;
     }
 
-    public void returnSuit(){
+
+    public String returnSuit(){
         String ranking = null;
         switch(suit){
             case 1:
@@ -99,7 +100,7 @@ public class Card extends ImageView{
                 ranking = " This isn't working.";
                 break;
         }
-        System.out.println(ranking);
+        return ranking;
     }
 
     //Returns rank
@@ -112,9 +113,6 @@ public class Card extends ImageView{
         return suit;
     }
 
-    public void returnCardValue(Card card){
-
-    }
 
     //Flips cards
     public void flipCard(){

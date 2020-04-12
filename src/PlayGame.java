@@ -126,7 +126,7 @@ public class PlayGame extends Application{
         Button dealCard         = new Button("DEAL CARD");
         Button setCastle        = new Button("CASTLE");
         Button setRandCastle    = new Button ("RANDOM CASTLE");
-        System.out.println("There are " + deck.size() + " cards in the deck.");
+        //System.out.println("There are " + deck.size() + " cards in the deck.");
 
         dealCard.setOnAction((ActionEvent event) -> {
             Card newCard = deck.dealCard();
@@ -326,6 +326,7 @@ public class PlayGame extends Application{
     public void computerTurn(){
         COMPUTER.HAND.get(indexOfComputerSmallest()).flipCard();
         COMPUTER.HAND.get(indexOfComputerSmallest()).setCardPos(640, 360);
+        System.out.println( "Computer Discarded " + COMPUTER.HAND.get(indexOfComputerSmallest()).returnRank() +  COMPUTER.HAND.get(indexOfComputerSmallest()).returnSuit());
         DISCARD.add(COMPUTER.HAND.get(indexOfComputerSmallest()));
         COMPUTER.HAND.remove(indexOfComputerSmallest());
         COMPUTER.HAND.add(deck.dealCard());
@@ -338,6 +339,7 @@ public class PlayGame extends Application{
     public void playerTurn(){
         PLAYER.selectedCard.setCardPos(640, 360);
         DISCARD.add(PLAYER.selectedCard);
+        System.out.println("Player Discarded " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
         PLAYER.HAND.remove(PLAYER.selectedCard);
         PLAYER.HAND.add(deck.dealCard());
         playerHand.getChildren().add(PLAYER.HAND.get(3));
@@ -350,7 +352,7 @@ public class PlayGame extends Application{
 
     public boolean finished(){
         if(deck.size() < 0) {
-            System.out.println("Game Finished");
+            System.out.println("Deal Pile is depleted, Game Finished");
             System.exit(0);
             return true;
         }
