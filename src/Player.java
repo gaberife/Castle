@@ -10,6 +10,18 @@ public class Player extends ImageView {
     ArrayList<Card>  SEEN_CASTLE  =  new ArrayList<Card>();
     boolean flipped = false;
 
+    public int indexOfSmallest() {
+        int index = 0;
+        int min = HAND.get(index).getRank();
+        for (int i = 0; i < HAND.size(); i++) {
+            if (HAND.get(i).getRank() <= min) {
+                min = HAND.get(i).getRank();
+                index = i;
+            }
+        }
+        return index;
+    }
+
     public boolean checkBounds(double x, double y) {
         for (int i = 0; i < HAND.size(); i++) {
             if (x > HAND.get(i).getCardPosX() && x < HAND.get(i).getCardPosX() + 100 && y > HAND.get(i).getCardPosY() && y < HAND.get(i).getCardPosY() + 150)

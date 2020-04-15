@@ -113,7 +113,6 @@ public class Card extends ImageView {
         return suit;
     }
 
-
     //Flips cards
     public void flipCard(){
         if(getImage() == CardFaceUp)
@@ -142,7 +141,6 @@ public class Card extends ImageView {
     public double getCardPosY(){
         return getY();
     }
-
 
     public boolean getBounds(Card card, double x, double y){
         if(x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
@@ -178,22 +176,5 @@ public class Card extends ImageView {
         return  string ;
     }
 
-    //Returns if belongs to suit
-    public boolean belongsToSuit(Card card){
-        return (suit  ==  card.suit);
-    }
-
-    //Returns -1: card < other, 0: card = other, 1: card > other
-    public int compareTo(Card card) {
-        return Integer.compare(rank, card.rank);
-
-    }
-
-    //Determines if the card is on the table or not
-    public boolean onTable(double x, double y){
-        return (getX() != 0 && getY() != 0  &&
-                x  >=  getX()  && x  <=  getX()  +  WIDTH  &&
-                y  >=  getY()  && y  <=  getY()  +  HEIGHT);
-    }
 
 }
