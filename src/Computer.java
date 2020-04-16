@@ -65,26 +65,26 @@ public class Computer extends ImageView {
             if (HAND.size() != 3) {
                 for (int i = 0; i < 3; i++) {
                     int n = rand.nextInt(HAND.size());
-                    HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 100);
+                    HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 24);
                     UNSEEN_CASTLE.add(HAND.get(n));
                     HAND.remove(n);
                 }
             }
             for (int index = 0; index < 7; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
+                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
         }
         else if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
                 for (int i = 0; i < 3; i++) {
                     int n = rand.nextInt(HAND.size());
                     HAND.get(n).flipCard();
-                    HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 140);
+                    HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
                     SEEN_CASTLE.add(HAND.get(n));
                     HAND.remove(n);
                 }
             }
             for (int index = 0; index < 4; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
+                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
         }
     }
 }

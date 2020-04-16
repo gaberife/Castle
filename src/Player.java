@@ -53,25 +53,25 @@ public class Player extends ImageView {
             if (HAND.size() != 3) {
                 for (int i = 0; i < 3; i++) {
                     int n = rand.nextInt(HAND.size());
-                    HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 600);
+                    HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 546);
                     UNSEEN_CASTLE.add(HAND.get(n));
                     HAND.remove(n);
                 }
             }
             for (int index = 0; index < 7; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
+                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
         }
         if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()){
             if (SELECTED.size() == 3) {
                 for (int i = 0; i < SELECTED.size(); i++) {
                     HAND.remove(SELECTED.get(i));
-                    SELECTED.get(i).setBounds(900 + (Card.WIDTH + 100) * i, 560);
+                    SELECTED.get(i).setCardPos(900 + (Card.WIDTH + 100) * i, 496);
                     SEEN_CASTLE.add(SELECTED.get(i));
                 }
             }
             SELECTED.removeAll(SELECTED);
             for (int index = 0; index < 4; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
+                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
         }
     }
 

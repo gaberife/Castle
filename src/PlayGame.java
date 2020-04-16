@@ -30,22 +30,28 @@ public class PlayGame extends Application {
     ArrayList<Card> DISCARD = new ArrayList<Card>();
     String phase = "Deal";
     Random rand = new Random();
-    boolean turn = false;
 
     EventHandler<MouseEvent> CLICK = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent CLICK) {
-            double clickX = CLICK.getSceneX();
-            double clickY = CLICK.getSceneY();
+            if (phase == "Player Turn" || phase == "Seen") {
+                double clickX = CLICK.getSceneX();
+                double clickY = CLICK.getSceneY();
 
-            PLAYER.selectedCard = PLAYER.getCard(clickX, clickY);
-            if (PLAYER.HAND != null && PLAYER.checkBounds(clickX, clickY)) {
-                if (!PLAYER.alreadySelected()) {
-                    PLAYER.SELECTED.add(PLAYER.selectedCard);
-                    PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() - 50);
-                } else {
-                    PLAYER.SELECTED.remove(PLAYER.selectedCard);
-                    PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() + 50);
+                PLAYER.selectedCard = PLAYER.getCard(clickX, clickY);
+                if (PLAYER.HAND != null && PLAYER.checkBounds(clickX, clickY)) {
+                    if (!PLAYER.alreadySelected()) {
+                        PLAYER.SELECTED.add(PLAYER.selectedCard);
+                        PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() - 50);
+                    } else {
+                        PLAYER.SELECTED.remove(PLAYER.selectedCard);
+                        PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() + 50);
+                    }
                 }
+            }
+            else{
+                instructions = new Text("IT IS NOT YOUR TURN");
+                instructions.setFont(new Font(24));
+                root.getChildren().add(instructions);
             }
         }
     }; //Initializes CLICK Mouse Event
@@ -75,7 +81,9 @@ public class PlayGame extends Application {
                     finished();
                     break;
                 default:
-                    System.out.println("Game Over");
+                    instructions = new Text("SOMETHING IS WRONG");
+                    instructions.setFont(new Font(24));
+                    root.getChildren().add(instructions);
                     break;
             }
         }
@@ -103,7 +111,7 @@ public class PlayGame extends Application {
         deck = new CardDeck();
         deck.shuffle();
         for (int index = 0; index < deck.size(); index++) {
-            dealPile.setLayoutX(1100);
+            dealPile.setLayoutX(1140);
             dealPile.setLayoutY(285);
             dealPile.getChildren().add(deck.getCard(index));
         }
@@ -120,10 +128,8 @@ public class PlayGame extends Application {
         instructions.setFont(new Font(24));
         root.getChildren().addAll(mainCardGroup, instructions);
         Scene scene = new Scene(root, 1280, 720);
-
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, CLICK);
         scene.addEventFilter(KeyEvent.KEY_PRESSED, ENTER);
-
         //Reads background image in
         Images.background = new Image(new FileInputStream("C:\\Users\\Queen\\IdeaProjects\\Castle\\Green Background.jpg"));
         ImagePattern ImagePattern = new ImagePattern(Images.background);
@@ -143,7 +149,7 @@ public class PlayGame extends Application {
             for (int index = 0; index < 10; index++) {
                 Card newCard = deck.dealCard();
                 double CPHandPosX = 40 + (Card.WIDTH + 20) * index;
-                double CPHandPosY = 100;
+                double CPHandPosY = 48;
                 newCard.setCardPos(CPHandPosX, CPHandPosY);
                 COMPUTER.HAND.add(newCard);
                 computerHand.getChildren().add(COMPUTER.HAND.get(index));
@@ -151,7 +157,7 @@ public class PlayGame extends Application {
 
                 newCard = deck.dealCard();
                 double HPHandPosX = 40 + (Card.WIDTH + 20) * index;
-                double HPHandPosY = 500;
+                double HPHandPosY = 522;
                 newCard.setCardPos(HPHandPosX, HPHandPosY);
                 PLAYER.HAND.add(newCard);
                 playerHand.getChildren().add(PLAYER.HAND.get(index));
@@ -222,24 +228,24 @@ public class PlayGame extends Application {
             switch (turn) {
                 case "Computer":
                     COMPUTER.selectedCard.flipCard();
-                    COMPUTER.selectedCard.setCardPos(640, 360);
+                    COMPUTER.selectedCard.setCardPos(590, 285);
                     DISCARD.add(COMPUTER.selectedCard);
                     COMPUTER.HAND.remove(COMPUTER.selectedCard);
                     COMPUTER.HAND.add(deck.dealCard());
                     computerHand.getChildren().add(COMPUTER.HAND.get(3));
                     for (int index = 0; index < COMPUTER.HAND.size(); index++)
-                        COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
+                        COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
                     phase = "Player Turn";
                     break;
                 case "Player":
-                    PLAYER.selectedCard.setCardPos(640, 360);
+                    PLAYER.selectedCard.setCardPos(590, 285);
                     DISCARD.add(PLAYER.selectedCard);
                     PLAYER.HAND.remove(PLAYER.selectedCard);
                     PLAYER.HAND.add(deck.dealCard());
                     playerHand.getChildren().add(PLAYER.HAND.get(3));
                     PLAYER.HAND.get(3).flipCard();
                     for (int index = 0; index < PLAYER.HAND.size(); index++)
-                        PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
+                        PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
                     phase = "Computer Turn";
                     break;
                 default:
@@ -249,22 +255,21 @@ public class PlayGame extends Application {
         }
     }
 
-
     public void computerTurn() {
         COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).flipCard();
-        COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).setCardPos(640, 360);
+        COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).setCardPos(590, 285);
         System.out.println("Computer Discarded " + COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).returnRank() + COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).returnSuit());
         DISCARD.add(COMPUTER.HAND.get(COMPUTER.indexOfSmallest()));
         COMPUTER.HAND.remove(COMPUTER.indexOfSmallest());
         COMPUTER.HAND.add(deck.dealCard());
         playerHand.getChildren().add(COMPUTER.HAND.get(3));
         for (int index = 0; index < COMPUTER.HAND.size(); index++)
-            COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
+            COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
         phase = "Player Turn";
     }
 
     public void playerTurn() {
-        PLAYER.selectedCard.setCardPos(640, 360);
+        PLAYER.selectedCard.setCardPos(590, 285);
         DISCARD.add(PLAYER.selectedCard);
         System.out.println("Player Discarded " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
         PLAYER.HAND.remove(PLAYER.selectedCard);
@@ -272,7 +277,7 @@ public class PlayGame extends Application {
         playerHand.getChildren().add(PLAYER.HAND.get(3));
         PLAYER.HAND.get(3).flipCard();
         for (int index = 0; index < PLAYER.HAND.size(); index++)
-            PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
+            PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
         phase = "Computer Turn";
     }
 
