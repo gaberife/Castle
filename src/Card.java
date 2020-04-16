@@ -85,16 +85,16 @@ public class Card extends ImageView {
         String ranking = null;
         switch(suit){
             case 1:
-                ranking = " Hearts ";
+                ranking = " Hearts";
                 break;
             case 2:
-                ranking = " Diamonds ";
+                ranking = " Diamonds";
                 break;
             case 3:
-                ranking = " Spades ";
+                ranking = " Spades";
                 break;
             case 4:
-                ranking = " Clubs ";
+                ranking = " Clubs";
                 break;
             default:
                 ranking = " This isn't working.";

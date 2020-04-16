@@ -75,7 +75,8 @@ public class Player extends ImageView {
         }
     }
 
-    public void playCard(ArrayList cards){
+
+    public void playSelectedCards(ArrayList cards){
 
     }
 

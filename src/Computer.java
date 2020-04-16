@@ -58,6 +58,8 @@ public class Computer extends ImageView {
         }
     }
 
+
+
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {

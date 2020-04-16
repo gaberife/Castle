@@ -22,7 +22,7 @@ public class PlayGame extends Application {
     Group dealPile = new Group();
     Group computerHand = new Group();
     Group playerHand = new Group();
-    Group playerCastle = new Group();
+    Group discard = new Group();
     Node selected;
     Group computerCastle = new Group();
     Player PLAYER = new Player();
@@ -66,11 +66,11 @@ public class PlayGame extends Application {
                 case "Start":
                     decideStart();
                     break;
-                case "computers turn":
+                case "Computer Turn":
                     computerTurn();
                     finished();
                     break;
-                case "players turn":
+                case "Player Turn":
                     playerTurn();
                     finished();
                     break;
@@ -193,52 +193,62 @@ public class PlayGame extends Application {
 
     public void decideStart() {
         if (DISCARD.isEmpty()) {
-            if (COMPUTER.indexOfSmallest() > COMPUTER.indexOfSmallest()) {
-                COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).flipCard();
-                COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).setCardPos(640, 360);
-                DISCARD.add(COMPUTER.HAND.get(COMPUTER.indexOfSmallest()));
-                COMPUTER.HAND.remove(COMPUTER.indexOfSmallest());
-                COMPUTER.HAND.add(deck.dealCard());
-                playerHand.getChildren().add(COMPUTER.HAND.get(3));
-                for (int index = 0; index < COMPUTER.HAND.size(); index++)
-                    COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
-                phase = "players turn";
-            } else if (COMPUTER.indexOfSmallest() < PLAYER.indexOfSmallest()) {
-                PLAYER.HAND.get(PLAYER.indexOfSmallest()).setCardPos(640, 360);
-                DISCARD.add(PLAYER.HAND.get(PLAYER.indexOfSmallest()));
-                PLAYER.HAND.remove(PLAYER.indexOfSmallest());
-                PLAYER.HAND.add(deck.dealCard());
-                playerHand.getChildren().add(PLAYER.HAND.get(3));
-                PLAYER.HAND.get(3).flipCard();
-                for (int index = 0; index < PLAYER.HAND.size(); index++)
-                    PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
-                phase = "computers turn";
-            } else if (COMPUTER.indexOfSmallest() == PLAYER.indexOfSmallest()) {
+            COMPUTER.selectedCard = COMPUTER.HAND.get(COMPUTER.indexOfSmallest());
+            int computerMIN = COMPUTER.selectedCard.getRank();
+            PLAYER.selectedCard = PLAYER.HAND.get(PLAYER.indexOfSmallest());
+            int playerMIN = PLAYER.selectedCard.getRank();
+
+            String turn = "null";
+            if (COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).getRank() < PLAYER.HAND.get(PLAYER.indexOfSmallest()).getRank()) {
+                System.out.println("Computer has the smallest ranked card, " + COMPUTER.selectedCard.returnRank() + COMPUTER.selectedCard.returnSuit() + ". Computer plays first.");
+                turn = "Computer";
+            }
+            else if (COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).getRank() > PLAYER.HAND.get(PLAYER.indexOfSmallest()).getRank()) {
+                System.out.println("Player has the smallest ranked card, " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit() + ". Player plays first.");
+                turn = "Player";
+            }
+            else if (computerMIN == playerMIN){
+                System.out.println("Both players have the same smallest ranked card, first discard will be selected randomly");
                 int n = rand.nextInt(2);
                 if (n == 1) {
-                    COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).flipCard();
-                    COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).setCardPos(640, 360);
-                    DISCARD.add(COMPUTER.HAND.get(COMPUTER.indexOfSmallest()));
-                    COMPUTER.HAND.remove(COMPUTER.indexOfSmallest());
+                    System.out.println("Player plays first. " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
+                    turn = "Player";
+                }
+                else if (n == 2){
+                    System.out.println("Computer plays first. " + COMPUTER.selectedCard.returnRank() + COMPUTER.selectedCard.returnSuit());
+                    turn = "Computer";
+                }
+            }
+            switch (turn) {
+                case "Computer":
+                    COMPUTER.selectedCard.flipCard();
+                    COMPUTER.selectedCard.setCardPos(640, 360);
+                    DISCARD.add(COMPUTER.selectedCard);
+                    COMPUTER.HAND.remove(COMPUTER.selectedCard);
                     COMPUTER.HAND.add(deck.dealCard());
-                    playerHand.getChildren().add(COMPUTER.HAND.get(3));
+                    computerHand.getChildren().add(COMPUTER.HAND.get(3));
                     for (int index = 0; index < COMPUTER.HAND.size(); index++)
                         COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
-                    phase = "players turn";
-                } else if (n == 2) {
-                    PLAYER.HAND.get(PLAYER.indexOfSmallest()).setCardPos(640, 360);
-                    DISCARD.add(PLAYER.HAND.get(PLAYER.indexOfSmallest()));
-                    PLAYER.HAND.remove(PLAYER.indexOfSmallest());
+                    phase = "Player Turn";
+                    break;
+                case "Player":
+                    PLAYER.selectedCard.setCardPos(640, 360);
+                    DISCARD.add(PLAYER.selectedCard);
+                    PLAYER.HAND.remove(PLAYER.selectedCard);
                     PLAYER.HAND.add(deck.dealCard());
                     playerHand.getChildren().add(PLAYER.HAND.get(3));
                     PLAYER.HAND.get(3).flipCard();
                     for (int index = 0; index < PLAYER.HAND.size(); index++)
                         PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
-                    phase = "computers turn";
-                }
+                    phase = "Computer Turn";
+                    break;
+                default:
+                    System.out.println("This is broken");
+                    break;
             }
         }
     }
+
 
     public void computerTurn() {
         COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).flipCard();
@@ -250,7 +260,7 @@ public class PlayGame extends Application {
         playerHand.getChildren().add(COMPUTER.HAND.get(3));
         for (int index = 0; index < COMPUTER.HAND.size(); index++)
             COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
-        phase = "players turn";
+        phase = "Player Turn";
     }
 
     public void playerTurn() {
@@ -263,7 +273,7 @@ public class PlayGame extends Application {
         PLAYER.HAND.get(3).flipCard();
         for (int index = 0; index < PLAYER.HAND.size(); index++)
             PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
-        phase = "computers turn";
+        phase = "Computer Turn";
     }
 
     public boolean finished() {
