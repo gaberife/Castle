@@ -28,7 +28,7 @@ public class PlayGame extends Application {
     Player PLAYER = new Player();
     Computer COMPUTER = new Computer();
     ArrayList<Card> DISCARD = new ArrayList<Card>();
-    String phase = "deal";
+    String phase = "Deal";
     Random rand = new Random();
     boolean turn = false;
 
@@ -53,19 +53,17 @@ public class PlayGame extends Application {
     EventHandler<KeyEvent> ENTER = new EventHandler<KeyEvent>() {
         public void handle(KeyEvent ENTER) {
             switch (phase) {
-                case "deal":
+                case "Deal":
                     deal();
                     break;
-                case "init unseen castle":
-                    initUnseenCastle();
+                case "Unseen":
+                case "Seen":
+                    initCastle();
                     break;
-                case "init seen castle":
-                    initSeenCastle();
-                    break;
-                case "flip":
+                case "Flip":
                     flip();
                     break;
-                case "start":
+                case "Start":
                     decideStart();
                     break;
                 case "computers turn":
@@ -164,70 +162,33 @@ public class PlayGame extends Application {
             System.out.println("There are " + PLAYER.HAND.size() + " cards in player hand.");
             System.out.println("There are " + COMPUTER.HAND.size() + " cards in computer hand.");
         }
-        phase = "init unseen castle";
+        phase = "Unseen";
     }
 
     public void flip() {
         if (!PLAYER.UNSEEN_CASTLE.isEmpty()) {
             PLAYER.HAND.forEach(Card::flipCard);
-            phase = "init seen castle";
+            phase = "Seen";
         }
     }
 
-    public void initUnseenCastle() {
-        if (PLAYER.UNSEEN_CASTLE.isEmpty() && COMPUTER.UNSEEN_CASTLE.isEmpty()) {
-            if (PLAYER.HAND.size() != 3) {
-                for (int i = 0; i < 3; i++) {
-                    int n = rand.nextInt(PLAYER.HAND.size());
-                    PLAYER.HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 600);
-                    PLAYER.UNSEEN_CASTLE.add(PLAYER.HAND.get(n));
-                    PLAYER.HAND.remove(n);
-                }
-            }
-            if (COMPUTER.HAND.size() != 3) {
-                for (int i = 0; i < 3; i++) {
-                    int n = rand.nextInt(COMPUTER.HAND.size());
-                    COMPUTER.HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 100);
-                    COMPUTER.UNSEEN_CASTLE.add(COMPUTER.HAND.get(n));
-                    COMPUTER.HAND.remove(n);
-                }
-            }
+    public void initCastle() {
+        if (phase == "Unseen") {
+            if (PLAYER.UNSEEN_CASTLE.isEmpty())
+                PLAYER.initCastle();
+            if(COMPUTER.UNSEEN_CASTLE.isEmpty())
+                COMPUTER.initCastle();
+            if(!PLAYER.UNSEEN_CASTLE.isEmpty() && !COMPUTER.UNSEEN_CASTLE.isEmpty())
+                phase = "Flip";
         }
-        for (int index = 0; index < 7; index++) {
-            COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
-            PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
+        if (phase == "Seen") {
+            if(PLAYER.SEEN_CASTLE.isEmpty())
+                PLAYER.initCastle();
+            if (COMPUTER.SEEN_CASTLE.isEmpty())
+                COMPUTER.initCastle();
+            if(!PLAYER.SEEN_CASTLE.isEmpty() && !COMPUTER.SEEN_CASTLE.isEmpty())
+                phase = "Start";
         }
-        phase = "flip";
-    }
-
-    public void initSeenCastle() {
-        if (PLAYER.SEEN_CASTLE.isEmpty() && COMPUTER.SEEN_CASTLE.isEmpty()) {
-            if (PLAYER.SELECTED.size() == 3) {
-                for (int i = 0; i < PLAYER.SELECTED.size(); i++) {
-                    if(playerHand.getChildren().equals(PLAYER.SELECTED.get(i)))
-                        playerHand.getChildren().get(i).toFront();
-                    PLAYER.HAND.remove(PLAYER.SELECTED.get(i));
-                    PLAYER.SELECTED.get(i).setBounds(900 + (Card.WIDTH + 100) * i, 560);
-                    PLAYER.SEEN_CASTLE.add(PLAYER.SELECTED.get(i));
-                }
-            }
-            PLAYER.SELECTED.removeAll(PLAYER.SELECTED);
-            if (COMPUTER.HAND.size() != 3) {
-                for (int i = 0; i < 3; i++) {
-                    int n = rand.nextInt(COMPUTER.HAND.size());
-                    computerHand.getChildren().get(n).toFront();
-                    COMPUTER.HAND.get(n).flipCard();
-                    COMPUTER.HAND.get(n).setBounds(900 + (Card.WIDTH + 100) * i, 140);
-                    COMPUTER.UNSEEN_CASTLE.add(COMPUTER.HAND.get(n));
-                    COMPUTER.HAND.remove(n);
-                }
-            }
-        }
-        for (int index = 0; index < 4; index++) {
-            COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 100);
-            PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 500);
-        }
-        phase = "start";
     }
 
     public void decideStart() {
@@ -317,10 +278,9 @@ public class PlayGame extends Application {
     public void bringCardToFront(Group hand, Card card, Group newGroup) {
         for (Node n: hand.getChildren()){
             if(n.equals(card)){
-                System.out.println("test");
                 newGroup.getChildren().add(n);
                 hand.getChildren().remove(n);
-                //n.toFront();
+                n.toFront();
             }
         }
     }
