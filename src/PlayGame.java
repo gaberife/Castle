@@ -9,9 +9,7 @@ import java.io.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayGame extends Application {
     CardDeck deck;
