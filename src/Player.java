@@ -12,7 +12,8 @@ public class Player extends ImageView {
     Random rand = new Random();
     boolean flipped = false;
 
-    public int indexOfSmallest() {
+    public Card smallest() {
+        Card card;
         int index = 0;
         int min = HAND.get(index).getRank();
         for (int i = 0; i < HAND.size(); i++) {
@@ -21,7 +22,7 @@ public class Player extends ImageView {
                 index = i;
             }
         }
-        return index;
+        return card = HAND.get(index);
     }
 
     public boolean checkBounds(double x, double y) {
@@ -47,13 +48,13 @@ public class Player extends ImageView {
         return false;
     }
 
-
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
                 for (int i = 0; i < 3; i++) {
                     int n = rand.nextInt(HAND.size());
                     HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 546);
+                    HAND.get(n).toFront();
                     UNSEEN_CASTLE.add(HAND.get(n));
                     HAND.remove(n);
                 }
@@ -66,6 +67,7 @@ public class Player extends ImageView {
                 for (int i = 0; i < SELECTED.size(); i++) {
                     HAND.remove(SELECTED.get(i));
                     SELECTED.get(i).setCardPos(900 + (Card.WIDTH + 100) * i, 496);
+                    SELECTED.get(i).toFront();
                     SEEN_CASTLE.add(SELECTED.get(i));
                 }
             }
@@ -73,14 +75,5 @@ public class Player extends ImageView {
             for (int index = 0; index < 4; index++)
                 HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
         }
-    }
-
-
-    public void playSelectedCards(ArrayList cards){
-
-    }
-
-    public void setBounds(double x, double y) {
-       selectedCard.setCardPos(x,y);
     }
 }

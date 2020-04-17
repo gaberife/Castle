@@ -35,43 +35,43 @@ public class Card extends ImageView {
         String ranking = null;
         switch (rank) {
             case 2:
-                ranking = "2 of";
+                ranking = "2 OF";
                 break;
             case 3:
-                ranking = "3 of";
+                ranking = "3 OF";
                 break;
             case 4:
-                ranking = "4 of";
+                ranking = "4 OF";
                 break;
             case 5:
-                ranking = "5 of";
+                ranking = "5 OF";
                 break;
             case 6:
-                ranking = "6 of";
+                ranking = "6 OF";
                 break;
             case 7:
-                ranking = "7 of";
+                ranking = "7 OF";
                 break;
             case 8:
-                ranking = "8 of";
+                ranking = "8 OF";
                 break;
             case 9:
-                ranking = "9 of";
+                ranking = "9 OF";
                 break;
             case 10:
                 ranking = "10 of";
                 break;
             case 11:
-                ranking = "Jack of";
+                ranking = "JACK OF";
                 break;
             case 12:
-                ranking = "Queen of";
+                ranking = "QUEEN OF";
                 break;
             case 13:
-                ranking = "King of";
+                ranking = "KING OF";
                 break;
             case 14:
-                ranking = "Ace of";
+                ranking = "ACE OF";
                 break;
             default:
                 System.out.print(rank);
@@ -85,16 +85,16 @@ public class Card extends ImageView {
         String ranking = null;
         switch(suit){
             case 1:
-                ranking = " Hearts";
+                ranking = " HEARTS";
                 break;
             case 2:
-                ranking = " Diamonds";
+                ranking = " DIAMONDS";
                 break;
             case 3:
-                ranking = " Spades";
+                ranking = " SPADES";
                 break;
             case 4:
-                ranking = " Clubs";
+                ranking = " CLUBS";
                 break;
             default:
                 ranking = " This isn't working.";

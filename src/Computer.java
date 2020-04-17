@@ -9,8 +9,8 @@ public class Computer extends ImageView {
     ArrayList<Card> SEEN_CASTLE = new ArrayList<Card>();
     Random rand = new Random();
 
-
-    public int indexOfSmallest() {
+    public Card smallest() {
+        Card card = null;
         int index = 0;
         int min = HAND.get(index).getRank();
         for (int i = 0; i < HAND.size(); i++) {
@@ -19,18 +19,13 @@ public class Computer extends ImageView {
                 index = i;
             }
         }
-        return index;
+        return card = HAND.get(index);
     }
 
-    public int indexOfBestPlay() {
-        for (int i = 0; i < HAND.size(); i++) {
-            if (HAND.get(i).getRank() == 2)
-                return i;
-            else if (HAND.get(i).getRank() == 10)
-                return i;
 
-        }
-        return indexOfSmallest();
+    public Card bestPlay() {
+        selectedCard = smallest();
+        return selectedCard;
     }
 
     public boolean checkBounds(double x, double y) {
@@ -58,14 +53,13 @@ public class Computer extends ImageView {
         }
     }
 
-
-
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
                 for (int i = 0; i < 3; i++) {
                     int n = rand.nextInt(HAND.size());
                     HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 24);
+                    HAND.get(n).toFront();
                     UNSEEN_CASTLE.add(HAND.get(n));
                     HAND.remove(n);
                 }
@@ -75,12 +69,13 @@ public class Computer extends ImageView {
         }
         else if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
-                for (int i = 0; i < 3; i++) {
-                    int n = rand.nextInt(HAND.size());
-                    HAND.get(n).flipCard();
-                    HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
-                    SEEN_CASTLE.add(HAND.get(n));
-                    HAND.remove(n);
+                for (int i = 0; i < 3; i++){
+                        int n = rand.nextInt(HAND.size());
+                        HAND.get(n).flipCard();
+                        HAND.get(n).toFront();
+                        HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
+                        SEEN_CASTLE.add(HAND.get(n));
+                        HAND.remove(n);
                 }
             }
             for (int index = 0; index < 4; index++)

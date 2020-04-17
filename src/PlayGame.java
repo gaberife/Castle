@@ -1,10 +1,10 @@
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.* ;
 import javafx.scene.input.* ;
-import javafx.scene.Node;
 import java.io.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.image.Image;
@@ -13,15 +13,15 @@ import java.util.*;
 
 public class PlayGame extends Application {
     CardDeck deck;
-
-    /*TODO: Implement computer hand, player hand, most recent discard and full discard pile*/
     StackPane root = new StackPane();
+    Scene scene = new Scene(root, 1280, 720);
     Text instructions = new Text("PRESS ENTER TO DEAL CARDS");
+    VBox vbox = new VBox(instructions);
     Group dealPile = new Group();
     Group computerHand = new Group();
     Group playerHand = new Group();
     Group discard = new Group();
-    Node selected;
+    Group humanCastle = new Group();
     Group computerCastle = new Group();
     Player PLAYER = new Player();
     Computer COMPUTER = new Computer();
@@ -45,11 +45,9 @@ public class PlayGame extends Application {
                         PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() + 50);
                     }
                 }
-            }
-            else{
+            } else {
                 instructions = new Text("IT IS NOT YOUR TURN");
-                instructions.setFont(new Font(24));
-                root.getChildren().add(instructions);
+                vBoxHandler(instructions);
             }
         }
     }; //Initializes CLICK Mouse Event
@@ -80,8 +78,7 @@ public class PlayGame extends Application {
                     break;
                 default:
                     instructions = new Text("SOMETHING IS WRONG");
-                    instructions.setFont(new Font(24));
-                    root.getChildren().add(instructions);
+                    vBoxHandler(instructions);
                     break;
             }
         }
@@ -121,11 +118,12 @@ public class PlayGame extends Application {
 
         Group mainCardGroup = new Group();
         mainCardGroup.setManaged(false);
-        mainCardGroup.getChildren().addAll(playerHand, computerHand, dealPile);
+        mainCardGroup.getChildren().addAll(playerHand, computerHand, dealPile, discard);
 
         instructions.setFont(new Font(24));
-        root.getChildren().addAll(mainCardGroup, instructions);
-        Scene scene = new Scene(root, 1280, 720);
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        root.getChildren().addAll(mainCardGroup, vbox);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, CLICK);
         scene.addEventFilter(KeyEvent.KEY_PRESSED, ENTER);
         //Reads background image in
@@ -139,8 +137,8 @@ public class PlayGame extends Application {
 
     public void deal() {
         if (instructions != null) {
-            root.getChildren().remove(instructions);
             instructions = null;
+            vBoxHandler(instructions);
         }
         if (PLAYER.HAND.isEmpty() && COMPUTER.HAND.isEmpty()) {
             //Allocates 10 Cards to Each player
@@ -161,10 +159,9 @@ public class PlayGame extends Application {
                 playerHand.getChildren().add(PLAYER.HAND.get(index));
                 dealPile.getChildren().remove(PLAYER.HAND.get(index));
             }
-            System.out.println("After dealing 10 cards to each player, there are " + deck.size() + " cards remaining in the deck.");
 
-            System.out.println("There are " + PLAYER.HAND.size() + " cards in player hand.");
-            System.out.println("There are " + COMPUTER.HAND.size() + " cards in computer hand.");
+            instructions = new Text("PRESS ENTER TO INITIALIZE CASTLE");
+            vBoxHandler(instructions);
         }
         phase = "Unseen";
     }
@@ -173,6 +170,8 @@ public class PlayGame extends Application {
         if (!PLAYER.UNSEEN_CASTLE.isEmpty()) {
             PLAYER.HAND.forEach(Card::flipCard);
             phase = "Seen";
+            instructions = new Text("PRESS ENTER TO INITIALIZE SEEN CASTLE");
+            vBoxHandler(instructions);
         }
     }
 
@@ -180,55 +179,55 @@ public class PlayGame extends Application {
         if (phase == "Unseen") {
             if (PLAYER.UNSEEN_CASTLE.isEmpty())
                 PLAYER.initCastle();
-            if(COMPUTER.UNSEEN_CASTLE.isEmpty())
+            if (COMPUTER.UNSEEN_CASTLE.isEmpty())
                 COMPUTER.initCastle();
-            if(!PLAYER.UNSEEN_CASTLE.isEmpty() && !COMPUTER.UNSEEN_CASTLE.isEmpty())
+            if (!PLAYER.UNSEEN_CASTLE.isEmpty() && !COMPUTER.UNSEEN_CASTLE.isEmpty()) {
                 phase = "Flip";
+                instructions = new Text("PRESS ENTER TO FLIP OVER YOUR CARDS");
+                vBoxHandler(instructions);
+            }
         }
         if (phase == "Seen") {
-            if(PLAYER.SEEN_CASTLE.isEmpty())
+            if (PLAYER.SEEN_CASTLE.isEmpty())
                 PLAYER.initCastle();
             if (COMPUTER.SEEN_CASTLE.isEmpty())
                 COMPUTER.initCastle();
-            if(!PLAYER.SEEN_CASTLE.isEmpty() && !COMPUTER.SEEN_CASTLE.isEmpty())
+            if (!PLAYER.SEEN_CASTLE.isEmpty() && !COMPUTER.SEEN_CASTLE.isEmpty()) {
                 phase = "Start";
+                instructions = new Text("PRESS ENTER TO DETERMINE WHICH PLAYER GOES FIRST");
+                vBoxHandler(instructions);
+            }
         }
     }
 
     public void decideStart() {
         if (DISCARD.isEmpty()) {
-            COMPUTER.selectedCard = COMPUTER.HAND.get(COMPUTER.indexOfSmallest());
-            int computerMIN = COMPUTER.selectedCard.getRank();
-            PLAYER.selectedCard = PLAYER.HAND.get(PLAYER.indexOfSmallest());
+            int computerMIN = COMPUTER.smallest().getRank();
+            PLAYER.selectedCard = PLAYER.smallest();
             int playerMIN = PLAYER.selectedCard.getRank();
 
             String turn = "null";
-            if (COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).getRank() < PLAYER.HAND.get(PLAYER.indexOfSmallest()).getRank()) {
-                System.out.println("Computer has the smallest ranked card, " + COMPUTER.selectedCard.returnRank() + COMPUTER.selectedCard.returnSuit() + ". Computer plays first.");
+            if (computerMIN < playerMIN)
                 turn = "Computer";
-            }
-            else if (COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).getRank() > PLAYER.HAND.get(PLAYER.indexOfSmallest()).getRank()) {
-                System.out.println("Player has the smallest ranked card, " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit() + ". Player plays first.");
+            else if (computerMIN > playerMIN)
                 turn = "Player";
-            }
-            else if (computerMIN == playerMIN){
-                System.out.println("Both players have the same smallest ranked card, first discard will be selected randomly");
+            else {
                 int n = rand.nextInt(2);
-                if (n == 1) {
-                    System.out.println("Player plays first. " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
+                if (n == 1)
                     turn = "Player";
-                }
-                else if (n == 2){
-                    System.out.println("Computer plays first. " + COMPUTER.selectedCard.returnRank() + COMPUTER.selectedCard.returnSuit());
+                else if (n == 2)
                     turn = "Computer";
-                }
             }
             switch (turn) {
                 case "Computer":
-                    COMPUTER.selectedCard.flipCard();
-                    COMPUTER.selectedCard.setCardPos(590, 285);
-                    DISCARD.add(COMPUTER.selectedCard);
-                    COMPUTER.HAND.remove(COMPUTER.selectedCard);
+                    instructions = new Text("COMPUTER GOES FIRST: " + COMPUTER.smallest().returnRank() + COMPUTER.smallest().returnSuit());
+                    vBoxHandler(instructions);
+                    COMPUTER.smallest().flipCard();
+                    COMPUTER.smallest().setCardPos(590, 285);
+                    DISCARD.add(COMPUTER.smallest());
+                    discard.getChildren().add(COMPUTER.smallest());
+                    COMPUTER.HAND.remove(COMPUTER.smallest());
+                    computerHand.getChildren().remove(COMPUTER.smallest());
                     COMPUTER.HAND.add(deck.dealCard());
                     computerHand.getChildren().add(COMPUTER.HAND.get(3));
                     for (int index = 0; index < COMPUTER.HAND.size(); index++)
@@ -236,8 +235,11 @@ public class PlayGame extends Application {
                     phase = "Player Turn";
                     break;
                 case "Player":
+                    instructions = new Text("PLAYER GOES FIRST: " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
+                    vBoxHandler(instructions);
                     PLAYER.selectedCard.setCardPos(590, 285);
                     DISCARD.add(PLAYER.selectedCard);
+                    discard.getChildren().add(COMPUTER.smallest());
                     PLAYER.HAND.remove(PLAYER.selectedCard);
                     PLAYER.HAND.add(deck.dealCard());
                     playerHand.getChildren().add(PLAYER.HAND.get(3));
@@ -253,30 +255,74 @@ public class PlayGame extends Application {
         }
     }
 
+    public int returnLastDiscard() {
+        int lastDiscard;
+        if(DISCARD.isEmpty())
+            lastDiscard = 0;
+        else
+            lastDiscard = DISCARD.get(DISCARD.size() - 1).getRank();
+        return lastDiscard;
+    }
+
     public void computerTurn() {
-        COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).flipCard();
-        COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).setCardPos(590, 285);
-        System.out.println("Computer Discarded " + COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).returnRank() + COMPUTER.HAND.get(COMPUTER.indexOfSmallest()).returnSuit());
-        DISCARD.add(COMPUTER.HAND.get(COMPUTER.indexOfSmallest()));
-        COMPUTER.HAND.remove(COMPUTER.indexOfSmallest());
+        COMPUTER.bestPlay().flipCard();
+        COMPUTER.bestPlay().setCardPos(590, 285);
+        instructions = new Text("COMPUTER DISCARDED " + COMPUTER.bestPlay().returnRank() + COMPUTER.bestPlay().returnSuit());
+        vBoxHandler(instructions);
+
+        DISCARD.add(COMPUTER.bestPlay());
+        COMPUTER.HAND.remove(COMPUTER.bestPlay());
+        discard.getChildren().add(COMPUTER.bestPlay());
+        COMPUTER.bestPlay().toFront();
+
         COMPUTER.HAND.add(deck.dealCard());
-        playerHand.getChildren().add(COMPUTER.HAND.get(3));
+        computerHand.getChildren().add(COMPUTER.HAND.get(3));
         for (int index = 0; index < COMPUTER.HAND.size(); index++)
             COMPUTER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
         phase = "Player Turn";
     }
 
     public void playerTurn() {
-        PLAYER.selectedCard.setCardPos(590, 285);
-        DISCARD.add(PLAYER.selectedCard);
-        System.out.println("Player Discarded " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
-        PLAYER.HAND.remove(PLAYER.selectedCard);
-        PLAYER.HAND.add(deck.dealCard());
-        playerHand.getChildren().add(PLAYER.HAND.get(3));
-        PLAYER.HAND.get(3).flipCard();
-        for (int index = 0; index < PLAYER.HAND.size(); index++)
-            PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
-        phase = "Computer Turn";
+        if (returnLastDiscard() < PLAYER.selectedCard.getRank() || returnLastDiscard() == PLAYER.selectedCard.getRank() ||
+                PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
+            PLAYER.selectedCard.setCardPos(590, 285);
+
+            DISCARD.add(PLAYER.selectedCard);
+            PLAYER.HAND.remove(PLAYER.selectedCard);
+            discard.getChildren().add(PLAYER.selectedCard);
+            PLAYER.selectedCard.toFront();
+
+            if (PLAYER.selectedCard.getRank() == 2) {
+                instructions = new Text("DISCARD AGAIN");
+                vBoxHandler(instructions);
+                phase = "Player Turn";
+            }
+            else{
+                if(PLAYER.selectedCard.getRank() == 10) {
+                    instructions = new Text("PLAYER DISCARDED " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
+                    vBoxHandler(instructions);
+                    discard.getChildren().removeAll(DISCARD);
+                    root.getChildren().removeAll(discard);
+                    DISCARD.clear();
+                    root.getChildren().add(discard);
+                    System.out.println("Testing 123. Discard Array has: " + DISCARD.size() + " cards. Discard Group has: " + discard.getChildren().size());
+                }
+                else{
+                    instructions = new Text("PLAYER DISCARDED " + PLAYER.selectedCard.returnRank() + PLAYER.selectedCard.returnSuit());
+                    vBoxHandler(instructions);
+                }
+                phase = "Computer Turn";
+            }
+            PLAYER.HAND.add(deck.dealCard());
+            playerHand.getChildren().add(PLAYER.HAND.get(3));
+            PLAYER.HAND.get(3).flipCard();
+            for (int index = 0; index < PLAYER.HAND.size(); index++)
+                PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
+        }
+        else if (returnLastDiscard() > PLAYER.selectedCard.getRank()) {
+            instructions = new Text("THAT IS NOT A VALID DISCARD");
+            vBoxHandler(instructions);
+        }
     }
 
     public boolean finished() {
@@ -288,14 +334,16 @@ public class PlayGame extends Application {
         return false;
     }
 
-    public void bringCardToFront(Group hand, Card card, Group newGroup) {
-        for (Node n: hand.getChildren()){
-            if(n.equals(card)){
-                newGroup.getChildren().add(n);
-                hand.getChildren().remove(n);
-                n.toFront();
-            }
+    public void vBoxHandler(Text text){
+        if(text != null){
+            text.setFont(new Font(24));
+            root.getChildren().remove(vbox);
+            vbox = new VBox(text);
+            vbox.setAlignment(Pos.CENTER_LEFT);
+            root.getChildren().add(vbox);
         }
+        else if (root.getChildren().contains(vbox))
+            root.getChildren().remove(vbox);
     }
 
     public static void main(String args[] ){
