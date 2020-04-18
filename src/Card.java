@@ -31,7 +31,7 @@ public class Card extends ImageView {
         setImage(Images.faceDown);
     }
 
-    public String returnRank() {
+    public String returnCard() {
         String ranking = null;
         switch (rank) {
             case 2:
@@ -77,27 +77,22 @@ public class Card extends ImageView {
                 System.out.print(rank);
                 break;
         }
-        return ranking;
-    }
-
-
-    public String returnSuit(){
-        String ranking = null;
+        //String ranking = null;
         switch(suit){
             case 1:
-                ranking = " HEARTS";
+                ranking = ranking + " HEARTS";
                 break;
             case 2:
-                ranking = " DIAMONDS";
+                ranking = ranking + " DIAMONDS";
                 break;
             case 3:
-                ranking = " SPADES";
+                ranking = ranking + " SPADES";
                 break;
             case 4:
-                ranking = " CLUBS";
+                ranking = ranking + " CLUBS";
                 break;
             default:
-                ranking = " This isn't working.";
+                ranking = ranking + " This isn't working.";
                 break;
         }
         return ranking;
