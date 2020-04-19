@@ -352,7 +352,7 @@ public class PlayGame extends Application {
                 phase = "Computer Turn";
             }
             PLAYER.HAND.add(deck.dealCard());
-            playerHand.getChildren().add(PLAYER.HAND.get(3));
+            playerHand.getChildren().add(PLAYER.HAND.get(PLAYER.HAND.size()-1));
             PLAYER.HAND.get(3).flipCard();
             for (int index = 0; index < PLAYER.HAND.size(); index++)
                 PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
@@ -387,11 +387,11 @@ public class PlayGame extends Application {
                 vBoxHandler(instructions);
 
                 PLAYER.HAND.addAll(DISCARD);
-
-                DISCARD.add(PLAYER.selectedCard);
-                PLAYER.HAND.remove(PLAYER.selectedCard);
-                playerHand.getChildren().remove(PLAYER.selectedCard);
-                discard.getChildren().add(PLAYER.selectedCard);
+                discard.getChildren().removeAll(DISCARD);
+                playerHand.getChildren().addAll(DISCARD);
+                DISCARD.removeAll(DISCARD);
+                for (int index = 0; index < PLAYER.HAND.size(); index++)
+                    PLAYER.HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
 
                 phase = "Computer Turn";
             }
