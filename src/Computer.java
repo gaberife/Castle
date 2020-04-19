@@ -33,18 +33,43 @@ public class Computer extends ImageView {
         }
         return card;
     }
-    public Card bestPlay() {
-        /*
-        int RANK = card.getRank();
-        for(Card temp : HAND) {
-            if (HAND.contains(temp.getRank() > RANK))
-                selectedCard = temp;
+
+    public boolean containsRank(ArrayList<Card> givenHand, int givenRank){
+        return givenHand.stream().filter(o -> o.getRank() == (givenRank)).findFirst().isPresent();
+    }
+
+    public Card containsRankReturn(int givenRank) {
+        Card card = null;
+        for (Card temp : HAND)
+            if (temp.getRank() == givenRank)
+                card = temp;
+        return card;
+    }
+
+    public Card bestPlay(Card card) {
+        if (card == null) {
+            selectedCard = smallest();
+            System.out.println("Smallest");
+        } else if (containsRank(HAND, card.getRank())){
+            selectedCard = containsRankReturn(card.getRank());
+            System.out.println("Equal to");
+        } else if (containsRank(HAND, 2)){
+            selectedCard = containsRankReturn(2);
+            System.out.println("Two");
+        } else if (containsRank(HAND, 10)){
+            selectedCard = containsRankReturn(10);
+            System.out.println("Ten");
+        } else if (card.getRank() < largest().getRank()){
+            selectedCard = largest();
+            System.out.println("largest");
+        } else {
+            selectedCard = null;
+            System.out.println("NULL");
         }
-         */
-        selectedCard = largest();
         SELECTED.add(selectedCard);
         return selectedCard;
     }
+
 
     public boolean checkBounds(double x, double y) {
         for (int i = 0; i < HAND.size(); i++) {

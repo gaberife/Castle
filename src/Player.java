@@ -62,6 +62,7 @@ public class Player extends ImageView {
             return true;
         return false;
     }
+
     public  boolean checkSame(ArrayList<Card> temp) {
         int first = temp.get(0).getRank();
         for (int i = 1; i < temp.size(); i++)

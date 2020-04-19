@@ -239,39 +239,25 @@ public class PlayGame extends Application {
         returnLastDiscard();
     }
 
-    public int returnLastDiscard() {
+    public Card returnLastDiscard() {
         System.out.println("returnLastDiscard()");
-        System.out.println("Computer Array has: " + COMPUTER.HAND.size() + " cards. Computer Group has: " + computerHand.getChildren().size()
-                + "\nPlayer Array has: " + PLAYER.HAND.size() + " cards. Player Group has: " + playerHand.getChildren().size()+ "\n");
-
-        int lastDiscard;
+        Card lastDiscard;
         if(DISCARD.isEmpty())
-            lastDiscard = 0;
+            lastDiscard = null;
         else
-            lastDiscard = DISCARD.get(DISCARD.size() - 1).getRank();
-
-        System.out.println("Discard Array has: " + DISCARD.size() + " cards. Discard Group has: " + discard.getChildren().size() + "\nDiscard Array contains the following cards: ");
-        for(int i = 0; i < DISCARD.size(); i++){
-            System.out.print(DISCARD.get(i).returnCard() + " in discard group = ");
-            if (discard.getChildren().contains(DISCARD.get(i)))
-                System.out.println("TRUE");
-            else
-                System.out.println("FALSE");
-        }
-        System.out.println();
+            lastDiscard = DISCARD.get(DISCARD.size() - 1);
         return lastDiscard;
     }
 
     public void computerTurn() {
         System.out.println("computerTurn()");
-        Card card = COMPUTER.bestPlay();
+        Card card = COMPUTER.bestPlay(returnLastDiscard());
         ArrayList<Card> selectedCards = new ArrayList<Card>();
         selectedCards = COMPUTER.SELECTED;
         if(COMPUTER.HAND.size() > 0) {
+            System.out.println("test");
             if (selectedCards.size() == 1) {
-                System.out.println("test");
-                if (DISCARD.isEmpty() || returnLastDiscard() < card.getRank() || returnLastDiscard() == card.getRank() ||
-                        card.getRank() == 10 || card.getRank() == 2) {
+                if (card != null) {
                     card.flipCard();
                     card.setCardPos(590, 285);
                     DISCARD.add(card);
@@ -279,8 +265,6 @@ public class PlayGame extends Application {
                     discard.getChildren().add(card);
                     COMPUTER.HAND.remove(card);
                     card.toFront();
-                    COMPUTER.SELECTED.clear();
-
                     if (card.getRank() == 2) {
                         vBoxHandler(new Text("COMPUTER DISCARD AGAIN"));
                         phase = "Computer Turn";
@@ -293,7 +277,7 @@ public class PlayGame extends Application {
                         vBoxHandler(new Text("COMPUTER DISCARDED " + card.returnCard()));
                         phase = "Player Turn";
                     }
-                } else if (returnLastDiscard() > card.getRank()) {
+                } else if (card == null) {
                     if (!checkForValidDiscard(COMPUTER.HAND)) {
                         COMPUTER.HAND.addAll(DISCARD);
                         discard.getChildren().removeAll(DISCARD);
@@ -307,17 +291,18 @@ public class PlayGame extends Application {
                     }
                 }
             }
+            if (checkDealPile())
+                dealCard();
+            COMPUTER.SELECTED.clear();
+            COMPUTER.orderHand();
         }
-        if (checkDealPile())
-            dealCard();
-        COMPUTER.orderHand();
     }
 
     public void playerTurn() {
         System.out.println("playerTurn()");
         if(PLAYER.HAND.size() > 0) {
             if (PLAYER.SELECTED.size() == 1) {
-                if (DISCARD.isEmpty() || returnLastDiscard() < PLAYER.selectedCard.getRank() || returnLastDiscard() == PLAYER.selectedCard.getRank() ||
+                if (DISCARD.isEmpty() ||  returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() ||  returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
                         PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
 
                     PLAYER.selectedCard.setCardPos(590, 285);
@@ -341,10 +326,8 @@ public class PlayGame extends Application {
                         vBoxHandler(new Text("PLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                         phase = "Computer Turn";
                     }
-                    if(checkDealPile())
-                        dealCard();
                 }
-                else if (returnLastDiscard() > PLAYER.selectedCard.getRank()) {
+                else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
                     if (!checkForValidDiscard(PLAYER.HAND)) {
                         PLAYER.HAND.addAll(DISCARD);
                         discard.getChildren().removeAll(DISCARD);
@@ -357,7 +340,7 @@ public class PlayGame extends Application {
             }
             else if (PLAYER.SELECTED.size() > 1) {
                 if (PLAYER.checkSame(PLAYER.SELECTED)) {
-                    if (DISCARD.isEmpty() || returnLastDiscard() < PLAYER.selectedCard.getRank() || returnLastDiscard() == PLAYER.selectedCard.getRank() ||
+                    if (DISCARD.isEmpty() || returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() ||  returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
                             PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
 
                         PLAYER.SELECTED.forEach(card -> card.setCardPos(590, 285));
@@ -385,7 +368,7 @@ public class PlayGame extends Application {
                         if(checkDealPile())
                             dealCard();
                     }
-                    else if (returnLastDiscard() > PLAYER.selectedCard.getRank()) {
+                    else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
                         if (!checkForValidDiscard(PLAYER.HAND)) {
                             PLAYER.HAND.addAll(DISCARD);
                             discard.getChildren().removeAll(DISCARD);
@@ -405,8 +388,10 @@ public class PlayGame extends Application {
                     phase = "Player Turn";
                 }
             }
+            if(checkDealPile())
+                dealCard();
+            PLAYER.orderHand();
         }
-        PLAYER.orderHand();
     }
 
     public void dealCard() {
@@ -431,28 +416,34 @@ public class PlayGame extends Application {
         return false;
     }
 
-    public boolean checkForValidDiscard(ArrayList<Card> HAND){
+    public boolean checkForValidDiscard(ArrayList<Card> HAND) {
         ArrayList<Integer> temp = new ArrayList<Integer>();
-        for (int i = returnLastDiscard(); i < 15; i++)
+        for (int i = returnLastDiscard().getRank(); i < 15; i++)
             temp.add(i);
         if (!temp.contains(2))
             temp.add(2);
         if (!temp.contains(10))
             temp.add(10);
-            for (Card card : HAND) {
-                if (temp.contains(card.getRank())) {
-                    vBoxHandler(new Text("THAT IS NOT A VALID DISCARD, TRY AGAIN"));
-                    return true;
-                }
+        for (Card card : HAND) {
+            if (temp.contains(card.getRank())) {
+                vBoxHandler(new Text("THAT IS NOT A VALID DISCARD, TRY AGAIN"));
+                return true;
             }
-        vBoxHandler(new Text("PLAYER DOES NOT HAVE PLAYABLE CARDS, PLAYER MUST PICK UP THE DISCARD PILE"));
+        }
+        if (phase == "Computer Turn")
+            vBoxHandler(new Text("COMPUTER DOES NOT HAVE PLAYABLE CARDS, PLAYER MUST PICK UP THE DISCARD PILE"));
+        if (phase == "Player Turn")
+            vBoxHandler(new Text("PLAYER DOES NOT HAVE PLAYABLE CARDS, PLAYER MUST PICK UP THE DISCARD PILE"));
         return false;
     }
 
     public boolean finished() {
-        if (deck.size() < 0) {
-            System.out.println("Deal Pile is depleted, Game Finished");
-            System.exit(0);
+        if(playerHand.getChildren().isEmpty()) {
+            vBoxHandler(new Text("CONGRATULATIONS, YOU'VE WON"));
+            return true;
+        }
+        else if(computerHand.getChildren().isEmpty()){
+            vBoxHandler(new Text("SORRY, YOU'VE LOST"));
             return true;
         }
         return false;
