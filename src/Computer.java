@@ -22,7 +22,6 @@ public class Computer extends ImageView {
         return card = HAND.get(index);
     }
 
-
     public Card bestPlay() {
         selectedCard = smallest();
         return selectedCard;
@@ -69,7 +68,36 @@ public class Computer extends ImageView {
         }
         else if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
+                if(SEEN_CASTLE.size() != 3){
+                    for(int i = 0; i < HAND.size()-1; i++) {
+                        Card temp = HAND.get(i);
+                        if (temp.getRank() == 2) {
+                            SEEN_CASTLE.add(temp);
+                            HAND.remove(temp);
+                        }
+                        else if (temp.getRank() == 10) {
+                            SEEN_CASTLE.add(temp);
+                            HAND.remove(temp);
+                        }
+                        else if (temp.getRank() > 11) {
+                            SEEN_CASTLE.add(temp);
+                            HAND.remove(temp);
+                        }
+                        else {
+                            int n = rand.nextInt(HAND.size());
+                            SEEN_CASTLE.add(HAND.get(n));
+                            HAND.remove(n);
+                        }
+                    }
+                }
                 for (int i = 0; i < 3; i++){
+                    SEEN_CASTLE.get(i).flipCard();
+                    SEEN_CASTLE.get(i).toFront();
+                    SEEN_CASTLE.get(i).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
+                }
+
+                /*SEEN_CASTLE.addAll(TEMP);
+                    for (int i = 0; i < 3; i++){
                         int n = rand.nextInt(HAND.size());
                         HAND.get(n).flipCard();
                         HAND.get(n).toFront();
@@ -77,8 +105,9 @@ public class Computer extends ImageView {
                         SEEN_CASTLE.add(HAND.get(n));
                         HAND.remove(n);
                 }
+                 */
             }
-            for (int index = 0; index < 4; index++)
+            for (int index = 0; index < HAND.size(); index++)
                 HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
         }
     }

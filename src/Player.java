@@ -10,7 +10,6 @@ public class Player extends ImageView {
     ArrayList<Card> UNSEEN_CASTLE = new ArrayList<Card>();
     ArrayList<Card> SEEN_CASTLE = new ArrayList<Card>();
     Random rand = new Random();
-    boolean flipped = false;
 
     public Card smallest() {
         Card card;
@@ -47,6 +46,15 @@ public class Player extends ImageView {
             return true;
         return false;
     }
+
+    public  boolean checkSame(ArrayList<Card> temp){
+        int first = temp.get(0).getRank();
+        for (int i=1; i < temp.size() ; i++)
+            if (temp.get(0).getRank()!= first)
+                return false;
+        return true;
+    }
+
 
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
