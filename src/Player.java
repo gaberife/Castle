@@ -25,10 +25,26 @@ public class Player extends ImageView {
     }
 
     public boolean checkBounds(double x, double y) {
-        for (int i = 0; i < HAND.size(); i++) {
-            if (x > HAND.get(i).getCardPosX() && x < HAND.get(i).getCardPosX() + 100 && y > HAND.get(i).getCardPosY() && y < HAND.get(i).getCardPosY() + 150)
-                return true;
+        if (!HAND.isEmpty()) {
+            for (Card card : HAND) {
+                if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                    return true;
+            }
         }
+        else if (HAND.isEmpty() && !SEEN_CASTLE.isEmpty()) {
+                for (Card card : SEEN_CASTLE) {
+                    if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                        return true;
+                }
+            }
+        else if (HAND.isEmpty() && SEEN_CASTLE.isEmpty() && !SEEN_CASTLE.isEmpty()) {
+                if (UNSEEN_CASTLE != null) {
+                    for (Card card : UNSEEN_CASTLE) {
+                        if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                            return true;
+                    }
+                }
+            }
         return false;
     }
 
@@ -46,15 +62,22 @@ public class Player extends ImageView {
             return true;
         return false;
     }
-
-    public  boolean checkSame(ArrayList<Card> temp){
+    public  boolean checkSame(ArrayList<Card> temp) {
         int first = temp.get(0).getRank();
-        for (int i=1; i < temp.size() ; i++)
-            if (temp.get(0).getRank()!= first)
+        for (int i = 1; i < temp.size(); i++)
+            if (temp.get(0).getRank() != first)
                 return false;
         return true;
     }
 
+    public void orderHand(){
+        for (int index = 0; index < HAND.size(); index++) {
+            HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
+            if (!HAND.get(index).isFaceUp())
+                HAND.get(index).flipCard();
+        }
+        SELECTED.clear();
+    }
 
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
@@ -67,8 +90,7 @@ public class Player extends ImageView {
                     HAND.remove(n);
                 }
             }
-            for (int index = 0; index < 7; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
+            orderHand();
         }
         if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()){
             if (SELECTED.size() == 3) {
@@ -80,8 +102,7 @@ public class Player extends ImageView {
                 }
             }
             SELECTED.removeAll(SELECTED);
-            for (int index = 0; index < 4; index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
+            orderHand();
         }
     }
 }

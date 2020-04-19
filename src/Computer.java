@@ -8,22 +8,41 @@ public class Computer extends ImageView {
     ArrayList<Card> UNSEEN_CASTLE = new ArrayList<Card>();
     ArrayList<Card> SEEN_CASTLE = new ArrayList<Card>();
     Random rand = new Random();
+    ArrayList<Card> SELECTED = new ArrayList<Card>();
+
 
     public Card smallest() {
         Card card = null;
-        int index = 0;
-        int min = HAND.get(index).getRank();
-        for (int i = 0; i < HAND.size(); i++) {
-            if (HAND.get(i).getRank() <= min) {
-                min = HAND.get(i).getRank();
-                index = i;
+        Card min = HAND.get(0);
+        for (Card temp : HAND) {
+            if (temp.getRank() <= min.getRank()) {
+                min = temp;
+                card = min;
             }
         }
-        return card = HAND.get(index);
+        return card;
     }
-
+    public Card largest() {
+        Card card = null;
+        Card max = HAND.get(0);
+        for (Card temp : HAND) {
+            if (temp.getRank() >= max.getRank()) {
+                max = temp;
+                card = max;
+            }
+        }
+        return card;
+    }
     public Card bestPlay() {
-        selectedCard = smallest();
+        /*
+        int RANK = card.getRank();
+        for(Card temp : HAND) {
+            if (HAND.contains(temp.getRank() > RANK))
+                selectedCard = temp;
+        }
+         */
+        selectedCard = largest();
+        SELECTED.add(selectedCard);
         return selectedCard;
     }
 
@@ -50,6 +69,14 @@ public class Computer extends ImageView {
                 HAND.get(i).setCardPos(x - 50, y - 75);
             }
         }
+    }
+
+    public  boolean checkSame(ArrayList<Card> temp) {
+        int first = temp.get(0).getRank();
+        for (int i = 1; i < temp.size(); i++)
+            if (temp.get(0).getRank() != first)
+                return false;
+        return true;
     }
 
     public void initCastle() {
@@ -96,19 +123,17 @@ public class Computer extends ImageView {
                     SEEN_CASTLE.get(i).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
                 }
 
-                /*SEEN_CASTLE.addAll(TEMP);
-                    for (int i = 0; i < 3; i++){
-                        int n = rand.nextInt(HAND.size());
-                        HAND.get(n).flipCard();
-                        HAND.get(n).toFront();
-                        HAND.get(n).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
-                        SEEN_CASTLE.add(HAND.get(n));
-                        HAND.remove(n);
-                }
-                 */
             }
-            for (int index = 0; index < HAND.size(); index++)
-                HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
+            orderHand();
+        }
+    }
+
+    public void orderHand(){
+        for (int index = 0; index < HAND.size(); index++) {
+            HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
+            HAND.get(index).toFront();
+            if (HAND.get(index).isFaceUp())
+                HAND.get(index).flipCard();
         }
     }
 }
