@@ -12,16 +12,15 @@ public class Player extends ImageView {
     Random rand = new Random();
 
     public Card smallest() {
-        Card card;
-        int index = 0;
-        int min = HAND.get(index).getRank();
-        for (int i = 0; i < HAND.size(); i++) {
-            if (HAND.get(i).getRank() <= min) {
-                min = HAND.get(i).getRank();
-                index = i;
+        Card card = null;
+        Card min = HAND.get(0);
+        for (Card temp : HAND) {
+            if (temp.getRank() <= min.getRank() && temp.getRank() != 2) {
+                min = temp;
+                card = min;
             }
         }
-        return card = HAND.get(index);
+        return card;
     }
 
     public boolean checkBounds(double x, double y) {
@@ -50,9 +49,17 @@ public class Player extends ImageView {
 
     public Card getCard(double x, double y) {
         Card selectedCard = null;
-        for (int i = 0; i < HAND.size(); i++) {
-            if (x > HAND.get(i).getCardPosX() && x < HAND.get(i).getCardPosX() + 100 && y > HAND.get(i).getCardPosY() && y < HAND.get(i).getCardPosY() + 150)
-                selectedCard = HAND.get(i);
+        for (Card card : HAND) {
+            if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                selectedCard = card;
+        }
+        for (Card card : SEEN_CASTLE) {
+            if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                selectedCard = card;
+        }
+        for (Card card : UNSEEN_CASTLE) {
+            if (x > card.getCardPosX() && x < card.getCardPosX() + 100 && y > card.getCardPosY() && y < card.getCardPosY() + 150)
+                selectedCard = card;
         }
         return selectedCard;
     }

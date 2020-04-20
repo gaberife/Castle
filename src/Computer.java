@@ -15,7 +15,7 @@ public class Computer extends ImageView {
         Card card = null;
         Card min = HAND.get(0);
         for (Card temp : HAND) {
-            if (temp.getRank() <= min.getRank()) {
+            if (temp.getRank() <= min.getRank() && temp.getRank() != 2) {
                 min = temp;
                 card = min;
             }
