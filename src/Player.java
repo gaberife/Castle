@@ -1,7 +1,7 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.util.ArrayList;
-import java.util.Random;
+
+import java.util.*;
 
 public class Player extends ImageView {
     ArrayList<Card> HAND = new ArrayList<Card>();

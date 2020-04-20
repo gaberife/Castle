@@ -273,10 +273,10 @@ public class PlayGame extends Application {
                         card.getRank() == 10 || card.getRank() == 2) {
                     play(COMPUTER.SEEN_CASTLE, computerHand, card);
                     if (card.getRank() == 2) {
-                        vBoxHandler(new Text("PLAYER DISCARD AGAIN"));
+                        vBoxHandler(new Text("COMPUTER DISCARD AGAIN"));
                         phase = "Computer Turn";
                     } else if (card.getRank() == 10) {
-                        vBoxHandler(new Text("PLAYER DISCARDED " + card.returnCard()));
+                        vBoxHandler(new Text("COMPUTER DISCARDED " + card.returnCard()));
                         discard.getChildren().removeAll(DISCARD);
                         DISCARD.clear();
                         phase = "Player Turn";
@@ -298,7 +298,7 @@ public class PlayGame extends Application {
 
                         play(COMPUTER.UNSEEN_CASTLE,  computerHand,  card);
                         if (card.getRank() == 2) {
-                            vBoxHandler(new Text("PLAYER DISCARD AGAIN"));
+                            vBoxHandler(new Text("COMPUTER DISCARD AGAIN"));
                             phase = "Computer Turn";
                         } else if (card.getRank() == 10) {
                             vBoxHandler(new Text("PLAYER DISCARDED " + card.returnCard()));
@@ -306,7 +306,7 @@ public class PlayGame extends Application {
                             DISCARD.clear();
                             phase = "Player Turn";
                         } else {
-                            vBoxHandler(new Text("PLAYER DISCARDED " + card.returnCard()));
+                            vBoxHandler(new Text("COMPUTER DISCARDED " + card.returnCard()));
                             phase = "Player Turn";
                         }
                     } else if (returnLastDiscard().getRank() > card.getRank()) {
@@ -495,7 +495,7 @@ public class PlayGame extends Application {
             }
         }
         if (phase == "Computer Turn")
-            vBoxHandler(new Text("COMPUTER DOES NOT HAVE PLAYABLE CARDS, PLAYER MUST PICK UP THE DISCARD PILE"));
+            vBoxHandler(new Text("COMPUTER DOES NOT HAVE PLAYABLE CARDS, COMPUTER MUST PICK UP THE DISCARD PILE"));
         if (phase == "Player Turn")
             vBoxHandler(new Text("PLAYER DOES NOT HAVE PLAYABLE CARDS, PLAYER MUST PICK UP THE DISCARD PILE"));
         return false;
