@@ -192,9 +192,9 @@ public class PlayGame extends Application {
     public void decideStart() {
         if (DISCARD.isEmpty()) {
             Card CPCard = COMPUTER.smallest(COMPUTER.HAND);
-            int computerMIN = CPCard.getRank();
+            int computerMIN = CPCard.rank;
             Card PLCard = PLAYER.smallest();
-            int playerMIN = PLCard.getRank();
+            int playerMIN = PLCard.rank;
 
             String turn = "null";
             if (computerMIN < playerMIN)
@@ -248,10 +248,10 @@ public class PlayGame extends Application {
             if (selectedCards.size() == 1) {
                 if (card != null) {
                     play(COMPUTER.HAND, computerHand, card);
-                    if (card.getRank() == 2) {
+                    if (card.rank == 2) {
                         vBoxHandler(new Text("\tCOMPUTER DISCARD AGAIN"));
                         phase = "Computer Turn";
-                    } else if (card.getRank() == 10) {
+                    } else if (card.rank == 10) {
                         vBoxHandler(new Text("\tCOMPUTER CLEARED THE DISCARD PILE WITH " + card.returnCard()));
                         discard.getChildren().removeAll(DISCARD);
                         DISCARD.clear();
@@ -279,13 +279,13 @@ public class PlayGame extends Application {
                 Card card = COMPUTER.bestPlay(COMPUTER.SEEN_CASTLE,returnLastDiscard());
                 ArrayList<Card> selectedCards = new ArrayList<Card>();
                 selectedCards = COMPUTER.SELECTED;
-                if (DISCARD.isEmpty() || returnLastDiscard().getRank() < card.getRank() || returnLastDiscard().getRank() == card.getRank() ||
-                        card.getRank() == 10 || card.getRank() == 2) {
+                if (DISCARD.isEmpty() || returnLastDiscard().rank < card.rank || returnLastDiscard().rank == card.rank ||
+                        card.rank == 10 || card.rank == 2) {
                     play(COMPUTER.SEEN_CASTLE, computerHand, card);
-                    if (card.getRank() == 2) {
+                    if (card.rank == 2) {
                         vBoxHandler(new Text("\tCOMPUTER DISCARD AGAIN"));
                         phase = "Computer Turn";
-                    } else if (card.getRank() == 10) {
+                    } else if (card.rank == 10) {
                         vBoxHandler(new Text("\tCOMPUTER DISCARDED " + card.returnCard()));
                         discard.getChildren().removeAll(DISCARD);
                         DISCARD.clear();
@@ -294,7 +294,7 @@ public class PlayGame extends Application {
                         vBoxHandler(new Text("\tCOMPUTER DISCARDED " + card.returnCard()));
                         phase = "Player Turn";
                     }
-                } else if (returnLastDiscard().getRank() > card.getRank()) {
+                } else if (returnLastDiscard().rank > card.rank) {
                     if (!checkForValidDiscard(COMPUTER.SEEN_CASTLE)) {
                         returnToHand(COMPUTER.HAND, computerHand);
                         COMPUTER.orderHand();
@@ -306,14 +306,14 @@ public class PlayGame extends Application {
                 ArrayList<Card> selectedCards = new ArrayList<Card>();
                 selectedCards = COMPUTER.SELECTED;
                 if (COMPUTER.UNSEEN_CASTLE.size() != 0) {
-                    if (DISCARD.isEmpty() || returnLastDiscard().getRank() < card.getRank() || returnLastDiscard().getRank() == card.getRank() ||
-                            card.getRank() == 10 || card.getRank() == 2) {
+                    if (DISCARD.isEmpty() || returnLastDiscard().rank < card.rank || returnLastDiscard().rank == card.rank ||
+                            card.rank == 10 || card.rank == 2) {
 
                         play(COMPUTER.UNSEEN_CASTLE,  computerHand,  card);
-                        if (card.getRank() == 2) {
+                        if (card.rank == 2) {
                             vBoxHandler(new Text("\nCOMPUTER DISCARD AGAIN"));
                             phase = "Computer Turn";
-                        } else if (card.getRank() == 10) {
+                        } else if (card.rank == 10) {
                             vBoxHandler(new Text("\nCOMPUTER DISCARDED " + card.returnCard()));
                             discard.getChildren().removeAll(DISCARD);
                             DISCARD.clear();
@@ -322,7 +322,7 @@ public class PlayGame extends Application {
                             vBoxHandler(new Text("\nCOMPUTER DISCARDED " + card.returnCard()));
                             phase = "Player Turn";
                         }
-                    } else if (returnLastDiscard().getRank() > card.getRank()) {
+                    } else if (returnLastDiscard().rank > card.rank) {
                         COMPUTER.HAND.add(card);
                         COMPUTER.HAND.get(COMPUTER.HAND.size() - 1).flipCard();
                         returnToHand(COMPUTER.HAND, computerHand);
@@ -338,14 +338,14 @@ public class PlayGame extends Application {
     public void playerTurn() {
         if (PLAYER.HAND.size() != 0) {
             if (PLAYER.SELECTED.size() == 1) {
-                if (DISCARD.isEmpty() || returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() || returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
-                        PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
+                if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
+                        PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
 
                     play(PLAYER.HAND,  playerHand,  PLAYER.selectedCard);
-                    if (PLAYER.selectedCard.getRank() == 2) {
+                    if (PLAYER.selectedCard.rank == 2) {
                         vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
                         phase = "Player Turn";
-                    } else if (PLAYER.selectedCard.getRank() == 10) {
+                    } else if (PLAYER.selectedCard.rank == 10) {
                         vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                         discard.getChildren().removeAll(DISCARD);
                         DISCARD.clear();
@@ -354,7 +354,7 @@ public class PlayGame extends Application {
                         vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                         phase = "Computer Turn";
                     }
-                } else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
+                } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
                     if (!checkForValidDiscard(PLAYER.HAND)) {
                         returnToHand(PLAYER.HAND, playerHand);
                         PLAYER.orderHand();
@@ -363,8 +363,8 @@ public class PlayGame extends Application {
                 }
             } else if (PLAYER.SELECTED.size() > 1) {
                 if (PLAYER.checkSame(PLAYER.SELECTED)) {
-                    if (DISCARD.isEmpty() || returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() || returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
-                            PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
+                    if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
+                            PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
 
                         PLAYER.SELECTED.forEach(card -> card.setCardPos(590, 285));
                         DISCARD.addAll(PLAYER.SELECTED);
@@ -373,10 +373,10 @@ public class PlayGame extends Application {
                         discard.getChildren().addAll(PLAYER.SELECTED);
                         PLAYER.SELECTED.forEach((card -> card.toFront()));
 
-                        if (PLAYER.selectedCard.getRank() == 2) {
+                        if (PLAYER.selectedCard.rank == 2) {
                             vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
                             phase = "Player Turn";
-                        } else if (PLAYER.selectedCard.getRank() == 10) {
+                        } else if (PLAYER.selectedCard.rank == 10) {
                             discard.getChildren().removeAll(DISCARD);
                             DISCARD.clear();
                             vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
@@ -386,7 +386,7 @@ public class PlayGame extends Application {
                             phase = "Computer Turn";
                         }
                         dealCard(PLAYER.HAND, playerHand);
-                    } else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
+                    } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
                         if (!checkForValidDiscard(PLAYER.HAND)) {
                             returnToHand(PLAYER.HAND, playerHand);
                             PLAYER.orderHand();
@@ -405,14 +405,14 @@ public class PlayGame extends Application {
             PLAYER.orderHand();
         } else {
             if (PLAYER.SEEN_CASTLE.size() != 0) {
-                if (DISCARD.isEmpty() || returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() || returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
-                        PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
+                if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
+                        PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
 
                     play(PLAYER.SEEN_CASTLE,  playerHand,  PLAYER.selectedCard);
-                    if (PLAYER.selectedCard.getRank() == 2) {
+                    if (PLAYER.selectedCard.rank == 2) {
                         vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
                         phase = "Player Turn";
-                    } else if (PLAYER.selectedCard.getRank() == 10) {
+                    } else if (PLAYER.selectedCard.rank == 10) {
                         vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                         discard.getChildren().removeAll(DISCARD);
                         DISCARD.clear();
@@ -421,7 +421,7 @@ public class PlayGame extends Application {
                         vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                         phase = "Computer Turn";
                     }
-                } else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
+                } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
                     if (!checkForValidDiscard(PLAYER.SEEN_CASTLE)) {
                         returnToHand(PLAYER.HAND, playerHand);
                         PLAYER.orderHand();
@@ -430,14 +430,14 @@ public class PlayGame extends Application {
                 }
             } else {
                 if (PLAYER.UNSEEN_CASTLE.size() != 0) {
-                    if (DISCARD.isEmpty() || returnLastDiscard().getRank() < PLAYER.selectedCard.getRank() || returnLastDiscard().getRank() == PLAYER.selectedCard.getRank() ||
-                            PLAYER.selectedCard.getRank() == 10 || PLAYER.selectedCard.getRank() == 2) {
+                    if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
+                            PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
 
                         play(PLAYER.UNSEEN_CASTLE,  playerHand,  PLAYER.selectedCard);
-                            if (PLAYER.selectedCard.getRank() == 2) {
+                            if (PLAYER.selectedCard.rank == 2) {
                             vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
                             phase = "Player Turn";
-                        } else if (PLAYER.selectedCard.getRank() == 10) {
+                        } else if (PLAYER.selectedCard.rank == 10) {
                             vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                             discard.getChildren().removeAll(DISCARD);
                             DISCARD.clear();
@@ -446,7 +446,7 @@ public class PlayGame extends Application {
                             vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
                             phase = "Computer Turn";
                         }
-                    } else if (returnLastDiscard().getRank() > PLAYER.selectedCard.getRank()) {
+                    } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
                         PLAYER.HAND.add(PLAYER.selectedCard);
                         PLAYER.HAND.get(PLAYER.HAND.size() - 1).flipCard();
                         returnToHand(PLAYER.HAND, playerHand);
@@ -495,14 +495,14 @@ public class PlayGame extends Application {
 
     public boolean checkForValidDiscard(ArrayList<Card> HAND) {
         ArrayList<Integer> temp = new ArrayList<Integer>();
-        for (int i = returnLastDiscard().getRank(); i < 15; i++)
+        for (int i = returnLastDiscard().rank; i < 15; i++)
             temp.add(i);
         if (!temp.contains(2))
             temp.add(2);
         if (!temp.contains(10))
             temp.add(10);
         for (Card card : HAND) {
-            if (temp.contains(card.getRank())) {
+            if (temp.contains(card.rank)) {
                 vBoxHandler(new Text("\tTHAT IS NOT A VALID DISCARD, TRY AGAIN"));
                 return true;
             }

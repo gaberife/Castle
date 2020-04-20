@@ -15,7 +15,7 @@ public class Player extends ImageView {
         Card card = null;
         Card min = HAND.get(0);
         for (Card temp : HAND) {
-            if (temp.getRank() <= min.getRank() && temp.getRank() != 2) {
+            if (temp.rank <= min.rank && temp.rank != 2) {
                 min = temp;
                 card = min;
             }
@@ -71,9 +71,9 @@ public class Player extends ImageView {
     }
 
     public  boolean checkSame(ArrayList<Card> temp) {
-        int first = temp.get(0).getRank();
+        int first = temp.get(0).rank;
         for (int i = 1; i < temp.size(); i++)
-            if (temp.get(0).getRank() != first)
+            if (temp.get(0).rank != first)
                 return false;
         return true;
     }

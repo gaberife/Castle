@@ -7,8 +7,10 @@ public class Card extends ImageView {
     int rank;
     int suit;
 
-    Image CardFaceUp;
+    double xPos;
+    double yPos;
 
+    Image CardFaceUp;
     public static final int HEARTS = 1;
     public static final int DIAMONDS = 2;
     public static final int SPADES = 3;
@@ -20,6 +22,9 @@ public class Card extends ImageView {
     public Card(int givenRank, int givenSuit) {
         rank = givenRank;
         suit = givenSuit;
+        xPos = getX();
+        yPos = getY();
+
         if (suit == HEARTS)
             CardFaceUp = Images.faceUp.get("hearts" + rank);
         else if (suit == DIAMONDS)
@@ -101,11 +106,6 @@ public class Card extends ImageView {
     //Returns rank
     public int getRank(){
         return rank;
-    }
-
-    //Returns suit
-    public int getSuit(){
-        return suit;
     }
 
     //Flips cards

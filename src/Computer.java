@@ -15,7 +15,7 @@ public class Computer extends ImageView {
         Card card = null;
         Card min = hand.get(0);
         for (Card temp : hand) {
-            if (temp.getRank() <= min.getRank() && temp.getRank() != 2) {
+            if (temp.rank <= min.rank && temp.rank != 2) {
                 min = temp;
                 card = min;
             }
@@ -26,7 +26,7 @@ public class Computer extends ImageView {
         Card card = null;
         Card max = HAND.get(0);
         for (Card temp : HAND) {
-            if (temp.getRank() >= max.getRank()) {
+            if (temp.rank >= max.rank) {
                 max = temp;
                 card = max;
             }
@@ -35,13 +35,13 @@ public class Computer extends ImageView {
     }
 
     public boolean containsRank(ArrayList<Card> givenHand, int givenRank){
-        return givenHand.stream().filter(o -> o.getRank() == (givenRank)).findFirst().isPresent();
+        return givenHand.stream().filter(o -> o.rank == (givenRank)).findFirst().isPresent();
     }
 
     public Card containsRangeReturn(ArrayList<Card> givenHand, ArrayList<Integer> givenRange) {
         for (Card temp : givenHand) {
             for (int i : givenRange) {
-                if (temp.getRank() == i) {
+                if (temp.rank == i) {
                     return temp;
                 }
             }
@@ -51,7 +51,7 @@ public class Computer extends ImageView {
 
     public Card containsRankReturn(ArrayList<Card> givenHand, int givenRank) {
         for (Card temp : givenHand) {
-            if (temp.getRank() == givenRank) {
+            if (temp.rank == givenRank) {
                 return temp;
             }
         }
@@ -64,12 +64,12 @@ public class Computer extends ImageView {
             System.out.println("Smallest");
         }
         else{
-            if (containsRank(hand, card.getRank())) {
-                selectedCard = containsRankReturn(hand, card.getRank());
+            if (containsRank(hand, card.rank)) {
+                selectedCard = containsRankReturn(hand, card.rank);
                 System.out.println("Equal to");
             }else{
                 ArrayList<Integer> temp = new ArrayList<Integer>();
-                for (int i = card.getRank()+1; i < 15; i++)
+                for (int i = card.rank+1; i < 15; i++)
                     temp.add(i);
                 if (containsRangeReturn(hand, temp) != null) {
                     selectedCard = containsRangeReturn(hand, temp);
@@ -120,9 +120,9 @@ public class Computer extends ImageView {
     }
 
     public  boolean checkSame(ArrayList<Card> temp) {
-        int first = temp.get(0).getRank();
+        int first = temp.get(0).rank;
         for (int i = 1; i < temp.size(); i++)
-            if (temp.get(0).getRank() != first)
+            if (temp.get(0).rank != first)
                 return false;
         return true;
     }
