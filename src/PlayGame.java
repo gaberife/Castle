@@ -1,7 +1,9 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.*;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.* ;
 import javafx.scene.input.* ;
@@ -15,14 +17,21 @@ public class PlayGame extends Application {
     CardDeck deck;
     StackPane root = new StackPane();
     Scene scene = new Scene(root, 1280, 720);
+    Button HelpButton = new Button("Help?");
     Text instructions = new Text("\tOBJECT: Get rid of all the cards in your possession before your opponent can\n" +
             "\tby discarding cards of EQUAL or GREATER rank than the previous discard.\n\n" +
-            "\tNOTE: \n" +
-            "\t\t > You will be dealt 10 cards initially, 3 will be randomly selected for your castle, 3 you will select\n" +
-            "\t\t > 2 ranked cards RESET the previous discard rank and allows you a SECOND DISCARD.\n" +
-            "\t\t > 10 ranked cards CLEAR the discard pile so that those cards are NO LONGER PLAYABLE\n" +
-            "\t\t > You MUST have 4 cards in your hand at all time while the deal pile is not empty.\n" +
-            "\t\t > Once you have depleted your hand you are allowed to play the cards within your Castle.\n\n" +
+            "\tNOTE: The ENTER BUTTON starts the game, initializes castles, and confirms all discards\n\n" +
+            "\tGame Setup:\n" +
+            "\t\t Each player will be dealt 10 cards initially\n" +
+            "\t\t 3 cards will be randomly selected for each player’s unseen castle\n" +
+            "\t\t 3 more cards will be selected by each player for their seen castle\n" +
+            "\tSpecial Cards:\n" +
+            "\t\t Cards with a value of “2” will RESET the previous discard and grant a second discard\n" +
+            "\t\t Cards with a value of “10” will CLEAR the discard pile rendering those cards as no longer playable\n" +
+            "\tLimitations:\n" +
+            "\t\t If a player has no playable cards player MUST pick up the deck and add it to their hand\n" +
+            "\t\t Each player MUST have a minimum of 4 cards in hand at all times while the deal pile is not empty\n" +
+            "\t\t Only once players have depleted their hands are they allowed to play the cards within their Castle\n\n" +
             "\t\t IF YOU HAVE READ THE RULES YOU MAY PRESS ENTER TO BEGIN");
     VBox vbox = new VBox(instructions);
     Group dealPile = new Group();
@@ -43,6 +52,7 @@ public class PlayGame extends Application {
                     if (!PLAYER.alreadySelected()) {
                         PLAYER.SELECTED.add(PLAYER.selectedCard);
                         PLAYER.selectedCard.setY(PLAYER.selectedCard.getCardPosY() - 50);
+                        System.out.println(PLAYER.selectedCard.returnCard());
                         if(!PLAYER.selectedCard.isFaceUp())
                             PLAYER.selectedCard.flipCard();
                     }
@@ -123,6 +133,18 @@ public class PlayGame extends Application {
 
         instructions.setFont(new Font(24));
         vbox.setAlignment(Pos.CENTER_LEFT);
+
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e){
+
+                vBoxHandler(instructions);
+            }
+        };
+
+        HelpButton.setOnAction(event);
+        HelpButton.setLayoutX(250);
+        HelpButton.setLayoutY(220);
+        //HelpButton.setAlignment(Pos.BOTTOM_LEFT);
 
         root.getChildren().addAll(mainCardGroup, vbox);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, CLICK);
@@ -337,31 +359,31 @@ public class PlayGame extends Application {
 
     public void playerTurn() {
         if (PLAYER.HAND.size() != 0) {
-            if (PLAYER.SELECTED.size() == 1) {
-                if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
-                        PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
+                if (PLAYER.SELECTED.size() == 1) {
+                    if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
+                            PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {
 
-                    play(PLAYER.HAND,  playerHand,  PLAYER.selectedCard);
-                    if (PLAYER.selectedCard.rank == 2) {
-                        vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
-                        phase = "Player Turn";
-                    } else if (PLAYER.selectedCard.rank == 10) {
-                        vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
-                        discard.getChildren().removeAll(DISCARD);
-                        DISCARD.clear();
-                        phase = "Computer Turn";
-                    } else {
-                        vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
-                        phase = "Computer Turn";
+                        play(PLAYER.HAND, playerHand, PLAYER.selectedCard);
+                        if (PLAYER.selectedCard.rank == 2) {
+                            vBoxHandler(new Text("\tPLAYER DISCARD AGAIN"));
+                            phase = "Player Turn";
+                        } else if (PLAYER.selectedCard.rank == 10) {
+                            vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
+                            discard.getChildren().removeAll(DISCARD);
+                            DISCARD.clear();
+                            phase = "Computer Turn";
+                        } else {
+                            vBoxHandler(new Text("\tPLAYER DISCARDED " + PLAYER.selectedCard.returnCard()));
+                            phase = "Computer Turn";
+                        }
+                    } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
+                        if (!checkForValidDiscard(PLAYER.HAND)) {
+                            returnToHand(PLAYER.HAND, playerHand);
+                            PLAYER.orderHand();
+                            phase = "Computer Turn";
+                        }
                     }
-                } else if (returnLastDiscard().rank > PLAYER.selectedCard.rank) {
-                    if (!checkForValidDiscard(PLAYER.HAND)) {
-                        returnToHand(PLAYER.HAND, playerHand);
-                        PLAYER.orderHand();
-                        phase = "Computer Turn";
-                    }
-                }
-            } else if (PLAYER.SELECTED.size() > 1) {
+                } else if (PLAYER.SELECTED.size() > 1) {
                 if (PLAYER.checkSame(PLAYER.SELECTED)) {
                     if (DISCARD.isEmpty() || returnLastDiscard().rank < PLAYER.selectedCard.rank || returnLastDiscard().rank == PLAYER.selectedCard.rank ||
                             PLAYER.selectedCard.rank == 10 || PLAYER.selectedCard.rank == 2) {

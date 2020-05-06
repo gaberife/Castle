@@ -1,4 +1,3 @@
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.*;
@@ -80,13 +79,15 @@ public class Player extends ImageView {
 
     public void orderHand(){
         for (int index = 0; index < HAND.size(); index++) {
+            HAND.get(index).toFront();
             HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 522);
             if (!HAND.get(index).isFaceUp())
                 HAND.get(index).flipCard();
+
         }
+        System.out.println("There are " + HAND.size() + " cards in player hand.");
         SELECTED.clear();
     }
-
     public void initCastle() {
         if (UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {

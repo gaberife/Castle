@@ -10,8 +10,7 @@ public class Computer extends ImageView {
     Random rand = new Random();
     ArrayList<Card> SELECTED = new ArrayList<Card>();
 
-
-    public Card smallest( ArrayList<Card> hand) {
+    public Card smallest(ArrayList<Card> hand) {
         Card card = null;
         Card min = hand.get(0);
         for (Card temp : hand) {
@@ -22,6 +21,7 @@ public class Computer extends ImageView {
         }
         return card;
     }
+
     public Card largest() {
         Card card = null;
         Card max = HAND.get(0);
@@ -34,7 +34,7 @@ public class Computer extends ImageView {
         return card;
     }
 
-    public boolean containsRank(ArrayList<Card> givenHand, int givenRank){
+    public boolean containsRank(ArrayList<Card> givenHand, int givenRank) {
         return givenHand.stream().filter(o -> o.rank == (givenRank)).findFirst().isPresent();
     }
 
@@ -58,32 +58,28 @@ public class Computer extends ImageView {
         return null;
     }
 
-    public Card bestPlay(ArrayList<Card> hand , Card card) {
+    public Card bestPlay(ArrayList<Card> hand, Card card) {
         if (card == null) {
             selectedCard = smallest(hand);
             System.out.println("Smallest");
-        }
-        else{
+        } else {
             if (containsRank(hand, card.rank)) {
                 selectedCard = containsRankReturn(hand, card.rank);
                 System.out.println("Equal to");
-            }else{
+            } else {
                 ArrayList<Integer> temp = new ArrayList<Integer>();
-                for (int i = card.rank+1; i < 15; i++)
+                for (int i = card.rank + 1; i < 15; i++)
                     temp.add(i);
                 if (containsRangeReturn(hand, temp) != null) {
                     selectedCard = containsRangeReturn(hand, temp);
                     System.out.println("In Range");
-                }
-                else if (containsRank(hand, 2)) {
-                    selectedCard = containsRankReturn(hand,2);
+                } else if (containsRank(hand, 2)) {
+                    selectedCard = containsRankReturn(hand, 2);
                     System.out.println("Two");
-                }
-                else if (containsRank(hand, 10)) {
-                    selectedCard = containsRankReturn(hand,10);
+                } else if (containsRank(hand, 10)) {
+                    selectedCard = containsRankReturn(hand, 10);
                     System.out.println("Ten");
-                }
-                else {
+                } else {
                     selectedCard = null;
                     System.out.println("NULL");
                 }
@@ -119,7 +115,7 @@ public class Computer extends ImageView {
         }
     }
 
-    public  boolean checkSame(ArrayList<Card> temp) {
+    public boolean checkSame(ArrayList<Card> temp) {
         int first = temp.get(0).rank;
         for (int i = 1; i < temp.size(); i++)
             if (temp.get(0).rank != first)
@@ -140,23 +136,22 @@ public class Computer extends ImageView {
             }
             for (int index = 0; index < 7; index++)
                 HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
-        }
-        else if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()) {
+        } else if (SEEN_CASTLE.isEmpty() && !UNSEEN_CASTLE.isEmpty()) {
             if (HAND.size() != 3) {
-                while(SEEN_CASTLE.size() != 3){
+                while (SEEN_CASTLE.size() != 3) {
                     Card temp;
                     if (containsRank(HAND, 2))
-                        temp = containsRankReturn(HAND,2);
+                        temp = containsRankReturn(HAND, 2);
                     else if (containsRank(HAND, 10))
-                        temp = containsRankReturn(HAND,10);
+                        temp = containsRankReturn(HAND, 10);
                     else if (containsRank(HAND, 14))
-                        temp = containsRankReturn(HAND,14);
+                        temp = containsRankReturn(HAND, 14);
                     else
                         temp = largest();
                     SEEN_CASTLE.add(temp);
                     HAND.remove(temp);
                 }
-                for (int i = 0; i < 3; i++){
+                for (int i = 0; i < 3; i++) {
                     SEEN_CASTLE.get(i).flipCard();
                     SEEN_CASTLE.get(i).toFront();
                     SEEN_CASTLE.get(i).setCardPos(900 + (Card.WIDTH + 100) * i, 74);
@@ -166,11 +161,11 @@ public class Computer extends ImageView {
         }
     }
 
-    public void orderHand(){
+    public void orderHand() {
         for (int index = 0; index < HAND.size(); index++) {
             HAND.get(index).setCardPos(40 + (Card.WIDTH + 20) * index, 48);
             HAND.get(index).toFront();
-            System.out.println(HAND.get(index).returnCard());
+            //System.out.println(HAND.get(index).returnCard());
             if (HAND.get(index).isFaceUp())
                 HAND.get(index).flipCard();
         }
